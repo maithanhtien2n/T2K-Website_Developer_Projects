@@ -1,6 +1,14 @@
 :root {
-    --mainColor: #6366F1;
+    --mainColor: #7a7cf0;
     --blueLight: #F0F2F5;
+}
+
+.bg-main-left {
+    background-image: linear-gradient(to left, #dadada, var(--mainColor));
+}
+
+.bg-main-right {
+    background-image: linear-gradient(to right, #dadada, var(--mainColor));
 }
 
 .bg-main-color {

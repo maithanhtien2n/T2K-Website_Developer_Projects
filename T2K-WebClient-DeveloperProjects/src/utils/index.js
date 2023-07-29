@@ -14,4 +14,11 @@ const formatDate = (dateString) => {
   return formattedDate;
 };
 
-export { appLocalStorage, formatDate };
+const formatToVND = (amount) => {
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(amount);
+};
+
+export { appLocalStorage, formatDate, formatToVND };

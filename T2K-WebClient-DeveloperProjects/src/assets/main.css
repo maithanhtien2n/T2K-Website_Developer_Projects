@@ -14,12 +14,34 @@
     -ms-tap-highlight-color: transparent;
 }
 
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.text-custom-mini {
+    font-size: .8rem;
+}
+
+.text-custom-1 {
+    font-size: 1.3rem;
+}
+
 .object-fit-cover {
     object-fit: cover;
 }
 
+.on-click {
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .on-click:active {
     opacity: 0.8;
+
 }
 
 .on-click-2:active {
@@ -41,21 +63,21 @@
 }
 
 .box-shadow {
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px !important;
 }
 
 .box-shadow-1 {
-    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px !important;
 }
 
 .box-shadow-2 {
-    box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px;
+    box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px !important;
 }
 
 .card {
     background-color: #fff;
     padding: 1rem;
-    /* border-radius: .5rem; */
+    border-radius: 1rem;
     box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
 }
 
@@ -79,11 +101,4 @@
     top: -.1rem;
     right: -.1rem;
     font-size: .6rem;
-}
-
-
-@media only screen and (max-width: 800px) {
-    .container {
-        gap: 0.5rem !important;
-    }
 }
