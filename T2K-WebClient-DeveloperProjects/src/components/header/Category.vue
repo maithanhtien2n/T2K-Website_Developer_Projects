@@ -1,9 +1,17 @@
 <script setup>
 import BackgroundRemovePopup from "@/components/common/BackgroundRemovePopup.vue";
 import { reactive } from "vue";
-import { formatToVND } from "@/utils/index";
+import { formatToVND, onLoadingPageRepeat } from "@/utils/index";
+import { StoreApp } from "@/services/stores";
+import { useRoute, useRouter } from "vue-router";
 
 const emits = defineEmits(["onEmitOpenPopupAuth"]);
+
+const ROUTE = useRoute();
+
+const ROUTER = useRouter();
+
+const { onActionLoadingActive } = StoreApp();
 
 const data = reactive({
   display: {
@@ -28,6 +36,15 @@ const onClickClosePopup = () => {
   data.display.transform = "translateX(-100%)";
 };
 
+const onClickToWarehouse = () => {
+  onLoadingPageRepeat(
+    ROUTE.name === "Warehouse",
+    onActionLoadingActive,
+    ROUTER.push({ name: "Warehouse" })
+  );
+  if (data.sizeScreen < 820) onClickClosePopup();
+};
+
 const onClickOpenPopupAuth = () => {
   emits("onEmitOpenPopupAuth");
   // onClickClosePopup();
@@ -48,7 +65,7 @@ const onClickOpenPopupAuth = () => {
     <div
       class="bg-main-color w-2rem h-2rem border-circle flex justify-content-center align-items-center"
     >
-      <i class="pi pi-bars text-white on-click" />
+      <i class="pi pi-bars text-white" />
     </div>
   </div>
 
@@ -60,20 +77,26 @@ const onClickOpenPopupAuth = () => {
       class="active-category-icon pi pi-times absolute on-click"
     />
 
+    <!-- Label kho hàng -->
+    <label
+      @click="onClickToWarehouse"
+      class="category-item flex align-items-center gap-1 on-click"
+    >
+      <i class="pi pi-home" />
+      Kho hàng
+    </label>
+
     <!-- Label thông báo -->
     <label class="category-item flex align-items-center gap-1 on-click">
       <i class="pi pi-bell" />
       Thông báo
     </label>
 
-    <!-- Label hỗ trợ -->
-    <label class="category-item flex align-items-center gap-1 on-click">
-      <i class="pi pi-question-circle" />
-      Hỗ trợ
-    </label>
-
     <!-- Thông tin người dùng -->
-    <div v-if="false" class="p-3 flex align-items-center gap-2 unselectable">
+    <div
+      v-if="true"
+      class="info-user flex align-items-center gap-2 unselectable"
+    >
       <img
         class="w-2rem h-2rem border-circle box-shadow-1"
         src="https://i.pinimg.com/originals/4d/86/5e/4d865ea47a8675d682ff35ad904a0af6.png"
@@ -87,7 +110,7 @@ const onClickOpenPopupAuth = () => {
     </div>
 
     <!-- Thanh đăng nhập, đăng ký -->
-    <div v-else class="p-3">
+    <div v-else class="btn-login">
       <Button
         @click="onClickOpenPopupAuth"
         label="Đăng nhập"
@@ -122,13 +145,18 @@ const onClickOpenPopupAuth = () => {
     background-image: linear-gradient(to right, #dadada, var(--mainColor));
   }
 
-  .category-item {
+  .category-item,
+  .info-user {
     padding: 1rem;
     transition: all 0.2s ease;
   }
 
   .category-item:hover {
     background-color: #fff;
+  }
+
+  .btn-login {
+    padding: 1rem;
   }
 }
 </style>

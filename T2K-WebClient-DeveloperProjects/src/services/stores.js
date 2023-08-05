@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { API_APP } from "./api";
 import { computed, ref } from "vue";
 
-// export * as STORE_PERSONAL from "@/views/personal/services/store";
+export * as STORE_WAREHOUSE from "@/views/warehouse/services/store";
 
 export const StoreApp = defineStore("StoreApp", () => {
   // State

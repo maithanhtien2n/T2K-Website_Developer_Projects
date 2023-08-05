@@ -3,6 +3,9 @@ import App from "@/App.vue";
 import { API_APP } from "./api";
 
 import RoutesHome from "@/views/home/services/routes";
+import RoutesProducts from "@/views/products/services/routes";
+import RoutesCart from "@/views/cart/services/routes";
+import RoutesWarehouse from "@/views/warehouse/services/routes";
 
 const routes = [
   {
@@ -12,7 +15,12 @@ const routes = [
     meta: {
       requiresAuth: true,
     },
-    children: [...RoutesHome],
+    children: [
+      ...RoutesHome,
+      ...RoutesProducts,
+      ...RoutesCart,
+      ...RoutesWarehouse,
+    ],
   },
   {
     path: "/login",

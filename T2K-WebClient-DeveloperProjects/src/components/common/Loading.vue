@@ -14,7 +14,7 @@ const { onGetterLoadingActive } = StoreApp();
     </div>
   </div>
 
-  <Dialog v-model:visible="onGetterLoadingActive" class="opacity-0" />
+  <Dialog v-model:visible="onGetterLoadingActive" modal class="opacity-0" />
 </template>
 
 <style scoped>
@@ -24,7 +24,7 @@ const { onGetterLoadingActive } = StoreApp();
   left: 0;
   right: 0;
   bottom: 0;
-  opacity: 0.6;
+  opacity: 0.9;
   background-image: linear-gradient(to top, #dadada, var(--mainColor));
   z-index: 9999999999 !important;
 }

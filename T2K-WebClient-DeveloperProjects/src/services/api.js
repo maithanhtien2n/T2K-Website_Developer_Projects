@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// export * as API_PERSONAL from "@/views/personal/services/api";
+export * as API_WAREHOUSE from "@/views/warehouse/services/api";
 
 class ApiApp {
   // onApiCreateNewPosts = async (args) => {

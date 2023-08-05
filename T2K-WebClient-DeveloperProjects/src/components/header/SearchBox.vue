@@ -1,11 +1,20 @@
 <script setup>
 import { reactive, watch } from "vue";
+import { useRouter } from "vue-router";
+import { StoreApp } from "@/services/stores";
+
+const ROUTER = useRouter();
+
+const { onActionLoadingActive } = StoreApp();
 
 const props = defineProps(["displaySearch"]);
 
 const emits = defineEmits(["onClosePopup"]);
 
 const data = reactive({
+  search: {
+    keySearch: "",
+  },
   display: {
     transform: window.innerWidth > 1165 ? "translateX(0)" : "translateX(-100%)",
   },
@@ -22,6 +31,14 @@ window.addEventListener("resize", () => {
 
 const onClickClosePopup = () => {
   data.display.transform = "translateX(-100%)";
+};
+
+const onClickSearchProducts = () => {
+  onActionLoadingActive(true);
+  ROUTER.push({ name: "Products", query: { search: data.search.keySearch } });
+  data.search.keySearch = "";
+  setTimeout(() => onActionLoadingActive(false), 1000);
+  if (data.sizeScreen < 1165) onClickClosePopup();
 };
 
 watch(
@@ -52,11 +69,17 @@ watch(
       class="search relative w-23rem flex align-items-center gap-2 bg-white border-round-3xl"
     >
       <input
+        v-model="data.search.keySearch"
         type="text"
         class="w-full border-none outline-none text-700 bg-transparent"
         placeholder="Bạn cần tìm?"
+        @keypress.enter="onClickSearchProducts"
       />
-      <i class="pi pi-search on-click font-bold text-800" />
+      <i
+        @click="onClickSearchProducts"
+        class="pi pi-search on-click font-bold text-800"
+        :class="{ 'p-disabled': !data.search.keySearch }"
+      />
 
       <div
         v-if="false"

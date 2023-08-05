@@ -18,6 +18,10 @@ import "primeicons/primeicons.css";
 import "/node_modules/primeflex/primeflex.css";
 
 // Components
+import CardBody from "@/components/CardBody.vue";
+import CardProducts from "@/components/CardProducts.vue";
+import Avatar from "@/components/common/Avatar.vue";
+import RatingCustom from "@/components/common/RatingCustom.vue";
 
 import InputText from "primevue/inputtext";
 import Password from "primevue/password";
@@ -36,12 +40,25 @@ import Column from "primevue/column";
 import Editor from "primevue/editor";
 import ScrollPanel from "primevue/scrollpanel";
 import Image from "primevue/image";
+import Rating from "primevue/rating";
+import ToastService from "primevue/toastservice";
+import Toast from "primevue/toast";
+import Tooltip from "primevue/tooltip";
+import Textarea from "primevue/textarea";
+import Checkbox from "primevue/checkbox";
 
 const app = createApp(AppWrapper);
 
 app.use(createPinia());
 app.use(router);
 app.use(PrimeVue);
+app.use(ToastService);
+app.directive("tooltip", Tooltip);
+
+app.component("CardBody", CardBody);
+app.component("CardProducts", CardProducts);
+app.component("Avatar", Avatar);
+app.component("RatingCustom", RatingCustom);
 
 app.component("InputText", InputText);
 app.component("Password", Password);
@@ -60,5 +77,9 @@ app.component("Column", Column);
 app.component("Editor", Editor);
 app.component("ScrollPanel", ScrollPanel);
 app.component("Image", Image);
+app.component("Rating", Rating);
+app.component("Toast", Toast);
+app.component("Textarea", Textarea);
+app.component("Checkbox", Checkbox);
 
 app.mount("#app");

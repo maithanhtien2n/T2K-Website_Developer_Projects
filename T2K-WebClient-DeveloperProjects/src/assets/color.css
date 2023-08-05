@@ -11,6 +11,14 @@
     background-image: linear-gradient(to right, #dadada, var(--mainColor));
 }
 
+.bg-main-top {
+    background-image: linear-gradient(to top, #dadada, var(--mainColor));
+}
+
+.bg-main-bottom {
+    background-image: linear-gradient(to bottom, #dadada, var(--mainColor));
+}
+
 .bg-main-color {
     background-color: var(--mainColor);
 }
