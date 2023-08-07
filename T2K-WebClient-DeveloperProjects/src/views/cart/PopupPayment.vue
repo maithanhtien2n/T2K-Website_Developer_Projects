@@ -1,0 +1,81 @@
+<script setup>
+import { reactive } from "vue";
+import { formatToVND } from "@/utils/index";
+
+const props = defineProps(["disableButtonPay", "payDetail"]);
+
+const data = reactive({
+  display: false,
+});
+
+const onClickPayMent = () => {
+  data.display = true;
+};
+</script>
+
+<template>
+  <Button
+    @click="onClickPayMent"
+    :disabled="props?.disableButtonPay"
+    class="btn"
+    label="Thanh toán"
+  />
+
+  <Dialog v-model:visible="data.display" modal class="w-30rem">
+    <template #header>
+      <span class="font-bold text-2xl text-main-color"
+        >Xác nhận thanh toán</span
+      >
+    </template>
+
+    <div class="w-full flex flex-column gap-3">
+      <div class="flex flex-column gap-1">
+        <span class="font-bold">Sản phẩm: </span>
+        <div
+          v-for="(item, index) in props?.payDetail?.productsName"
+          :key="index"
+        >
+          <span
+            v-if="props?.payDetail?.productsName.length > 1"
+            class="line-height-2"
+            >-
+          </span>
+          <span class="line-height-2">{{ item }}</span>
+        </div>
+      </div>
+
+      <div class="flex justify-content-between">
+        <span class="font-bold">Số lượng sản phẩm:</span>
+        <span>x {{ props?.payDetail?.amount }}</span>
+      </div>
+      <div class="flex justify-content-between">
+        <span class="font-bold">Tổng số tiền:</span>
+        <span class="p-error">
+          {{ formatToVND(props?.payDetail?.totalMoney) }}
+        </span>
+      </div>
+
+      <div class="bg-black-alpha-10 p-2 line-height-2">
+        Sau khi bạn ấn xác nhận chúng tôi sẽ gửi sản phẩm vào kho của bạn, hãy
+        kiểm tra kho nhé!
+      </div>
+    </div>
+
+    <template #footer>
+      <Button
+        @click="data.display = false"
+        label="Bỏ qua"
+        class="p-button-outlined"
+      />
+      <Button label="Xác nhận" />
+    </template>
+  </Dialog>
+</template>
+
+<style scoped>
+@media only screen and (max-width: 750px) {
+  .btn {
+    width: 100% !important;
+  }
+}
+</style>

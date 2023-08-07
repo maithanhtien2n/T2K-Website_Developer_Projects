@@ -1,5 +1,8 @@
 const appLocalStorage = () => {
-  return JSON.parse(localStorage.getItem("AppLocalStorage"));
+  return {
+    userInfo: JSON.parse(localStorage.getItem("AppLocalStorage")),
+    token: JSON.parse(localStorage.getItem("TOKEN")),
+  };
 };
 
 const isEmpty = (value) => {

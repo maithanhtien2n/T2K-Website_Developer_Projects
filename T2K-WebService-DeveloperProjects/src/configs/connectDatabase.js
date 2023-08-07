@@ -1,5 +1,5 @@
 const Sequelize = require("sequelize");
-const sequelize = new Sequelize("db-app-tshare", "root", "tien2000", {
+const sequelize = new Sequelize("dev-project-app", "root", "tien2000", {
   host: "localhost",
   dialect: "mysql",
 });

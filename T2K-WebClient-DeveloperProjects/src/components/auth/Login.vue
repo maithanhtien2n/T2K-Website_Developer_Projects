@@ -1,7 +1,16 @@
 <script setup>
 import * as Yup from "yup";
+import { reactive, ref } from "vue";
 import { Form, Field } from "vee-validate";
-import { reactive } from "vue";
+import { StoreApp } from "@/services/stores";
+import { updateAuthorizationHeader } from "@/services/api";
+
+const emits = defineEmits(["onEmitClosePopupAuth"]);
+
+const { onActionLoadingActive, onActionLogin, onActionGetUserInfo } =
+  StoreApp();
+
+const formLogin = ref(null);
 
 const data = reactive({
   formLogin: {
@@ -24,13 +33,22 @@ const onCheckValidate = () => {
   });
 };
 
-const onClickButtonLogin = (value) => {
-  console.log(value);
+const onClickButtonLogin = async (value) => {
+  onActionLoadingActive(true);
+  const res = await onActionLogin(value);
+  if (res?.success) {
+    localStorage.setItem("TOKEN", JSON.stringify(res?.data?.token));
+    updateAuthorizationHeader(res?.data?.token);
+    emits("onEmitClosePopupAuth");
+    location.reload();
+    setTimeout(() => onActionLoadingActive(false), 1000);
+  }
 };
 </script>
 
 <template>
   <Form
+    ref="formLogin"
     class="flex flex-column gap-3"
     :initial-values="data.formLogin"
     :validation-schema="onCheckValidate()"

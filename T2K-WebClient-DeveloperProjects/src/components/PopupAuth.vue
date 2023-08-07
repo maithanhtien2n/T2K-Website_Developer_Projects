@@ -37,6 +37,10 @@ const onClickOpenPopupLogin = () => {
   }, 1000);
 };
 
+const onClosePopupAuth = () => {
+  data.display = false;
+};
+
 watch(
   () => props.displayLogin,
   (value) => {
@@ -63,6 +67,7 @@ watch(
       <Login
         v-if="data.title === 'Đăng nhập'"
         @onEmitCreateNewAccount="onClickOpenPopupRegister"
+        @onEmitClosePopupAuth="onClosePopupAuth"
       />
 
       <Register v-else @onEmitLogin="onClickOpenPopupLogin" />

@@ -22,6 +22,7 @@ import CardBody from "@/components/CardBody.vue";
 import CardProducts from "@/components/CardProducts.vue";
 import Avatar from "@/components/common/Avatar.vue";
 import RatingCustom from "@/components/common/RatingCustom.vue";
+import BackgroundRemovePopup from "@/components/common/BackgroundRemovePopup.vue";
 
 import InputText from "primevue/inputtext";
 import Password from "primevue/password";
@@ -46,6 +47,9 @@ import Toast from "primevue/toast";
 import Tooltip from "primevue/tooltip";
 import Textarea from "primevue/textarea";
 import Checkbox from "primevue/checkbox";
+import Listbox from "primevue/listbox";
+import ConfirmationService from "primevue/confirmationservice";
+import ConfirmDialog from "primevue/confirmdialog";
 
 const app = createApp(AppWrapper);
 
@@ -54,11 +58,13 @@ app.use(router);
 app.use(PrimeVue);
 app.use(ToastService);
 app.directive("tooltip", Tooltip);
+app.use(ConfirmationService);
 
 app.component("CardBody", CardBody);
 app.component("CardProducts", CardProducts);
 app.component("Avatar", Avatar);
 app.component("RatingCustom", RatingCustom);
+app.component("BackgroundRemovePopup", BackgroundRemovePopup);
 
 app.component("InputText", InputText);
 app.component("Password", Password);
@@ -81,5 +87,7 @@ app.component("Rating", Rating);
 app.component("Toast", Toast);
 app.component("Textarea", Textarea);
 app.component("Checkbox", Checkbox);
+app.component("Listbox", Listbox);
+app.component("ConfirmDialog", ConfirmDialog);
 
 app.mount("#app");

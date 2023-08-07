@@ -42,15 +42,23 @@ const UsersInfo = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    vip: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    image: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     full_name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    introduce: {
-      type: DataTypes.TEXT,
-      allowNull: true,
+    phone_number: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
-    birth_date: {
+    day_of_birth: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -58,8 +66,16 @@ const UsersInfo = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    marital_status: {
+    account_money: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    updated_at: {
+      type: DataTypes.DATE,
       allowNull: true,
     },
   },

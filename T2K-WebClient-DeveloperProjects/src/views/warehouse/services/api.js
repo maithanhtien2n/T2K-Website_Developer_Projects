@@ -1,6 +1,6 @@
 import { AxiosInstance } from "@/services/api";
 
-class ApiApp {
+class ApiWarehouses {
   onApiGetWarehouses = async () => {
     return new Promise((resolve, reject) => {
       resolve({
@@ -43,4 +43,4 @@ class ApiApp {
   };
 }
 
-export const API_WAREHOUSE = new ApiApp();
+export const API_WAREHOUSE = new ApiWarehouses();

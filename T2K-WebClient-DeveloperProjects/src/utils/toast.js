@@ -32,6 +32,7 @@ export const ToastService = () => {
       severity: "error",
       summary: "Lỗi",
       detail: content,
+      life: 3000,
     });
 
   return {

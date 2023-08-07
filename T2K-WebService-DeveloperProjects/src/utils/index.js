@@ -14,7 +14,12 @@ const checkNull = (body, fields) => {
 };
 
 module.exports = {
-  onResponse: async (req, res, onModel, { checkData = [], data }) => {
+  onResponse: async (
+    req,
+    res,
+    onModel,
+    { checkData = [], data = undefined, message = undefined }
+  ) => {
     try {
       if (checkData[0]) checkNull(req.body, checkData);
 
@@ -23,7 +28,7 @@ module.exports = {
       return res.status(200).json({
         success: true,
         statusCode: 200,
-        statusValue: "OK",
+        statusValue: message ? message : "OK",
         data: response,
       });
     } catch (error) {

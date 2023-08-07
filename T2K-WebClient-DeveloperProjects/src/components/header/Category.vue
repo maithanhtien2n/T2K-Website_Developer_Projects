@@ -1,9 +1,9 @@
 <script setup>
-import BackgroundRemovePopup from "@/components/common/BackgroundRemovePopup.vue";
-import { reactive } from "vue";
-import { formatToVND, onLoadingPageRepeat } from "@/utils/index";
+import { reactive, watch } from "vue";
 import { StoreApp } from "@/services/stores";
 import { useRoute, useRouter } from "vue-router";
+import { updateAuthorizationHeader } from "@/services/api";
+import { formatToVND, onLoadingPageRepeat } from "@/utils/index";
 
 const emits = defineEmits(["onEmitOpenPopupAuth"]);
 
@@ -11,13 +11,14 @@ const ROUTE = useRoute();
 
 const ROUTER = useRouter();
 
-const { onActionLoadingActive } = StoreApp();
+const { onActionLoadingActive, onGetterUserInfo: userInfo } = StoreApp();
 
 const data = reactive({
   display: {
     transform: window.innerWidth > 820 ? "translateX(0)" : "translateX(-100%)",
   },
   sizeScreen: window.innerWidth,
+  settingOptions: ["Hồ sơ", "Đăng xuất"],
 });
 
 window.addEventListener("resize", () => {
@@ -47,12 +48,27 @@ const onClickToWarehouse = () => {
 
 const onClickOpenPopupAuth = () => {
   emits("onEmitOpenPopupAuth");
-  // onClickClosePopup();
+};
+
+const onClickItemOption = (value) => {
+  onActionLoadingActive(true);
+  switch (value) {
+    case "Hồ sơ":
+      //
+      break;
+    case "Đăng xuất":
+      localStorage.removeItem("TOKEN");
+      localStorage.removeItem("AppLocalStorage");
+      location.reload();
+      break;
+  }
+  setTimeout(() => onActionLoadingActive(false), 1000);
 };
 </script>
 
 <template>
   <BackgroundRemovePopup
+    v-if="data.sizeScreen < 820"
     :display="onActive()"
     @onRemovePopup="onClickClosePopup"
   />
@@ -80,33 +96,52 @@ const onClickOpenPopupAuth = () => {
     <!-- Label kho hàng -->
     <label
       @click="onClickToWarehouse"
-      class="category-item flex align-items-center gap-1 on-click"
+      class="category-item flex align-items-center gap-2 on-click"
     >
-      <i class="pi pi-home" />
+      <i class="pi pi-credit-card" />
       Kho hàng
     </label>
 
     <!-- Label thông báo -->
-    <label class="category-item flex align-items-center gap-1 on-click">
+    <label class="category-item flex align-items-center gap-2 on-click">
       <i class="pi pi-bell" />
       Thông báo
     </label>
 
     <!-- Thông tin người dùng -->
     <div
-      v-if="true"
-      class="info-user flex align-items-center gap-2 unselectable"
+      v-if="userInfo?.account_id"
+      class="info-user flex align-items-center gap-2 unselectable relative"
     >
       <img
         class="w-2rem h-2rem border-circle box-shadow-1"
         src="https://i.pinimg.com/originals/4d/86/5e/4d865ea47a8675d682ff35ad904a0af6.png"
       />
       <div class="flex flex-column gap-1 text-right">
-        <span class="font-bold">tienthanh2000</span>
-        <span class="text-custom-mini">$ {{ formatToVND(20000000) }}</span>
+        <span class="font-bold">{{ userInfo?.user_name }}</span>
+        <span class="text-custom-mini">
+          $ {{ formatToVND(userInfo?.user_info?.account_money) }}
+        </span>
       </div>
 
-      <i class="pi pi-spin pi-cog text-2xl on-click" />
+      <i
+        @click="onClickIconSetting"
+        class="pi pi-spin pi-cog text-2xl on-click"
+      />
+
+      <div
+        class="setting-option w-11rem py-2 overflow-hidden box-shadow-1 bg-white flex flex-column absolute top-100 right-0 border-round-2xl"
+      >
+        <span
+          v-for="(item, index) in data.settingOptions"
+          :key="index"
+          :class="{ 'p-error': item === 'Đăng xuất' }"
+          class="item-option cursor-pointer p-3 on-click"
+          @click="onClickItemOption(item)"
+        >
+          {{ item }}
+        </span>
+      </div>
     </div>
 
     <!-- Thanh đăng nhập, đăng ký -->
@@ -123,6 +158,18 @@ const onClickOpenPopupAuth = () => {
 <style scoped>
 .active-category-icon {
   display: none;
+}
+
+.setting-option {
+  display: none !important;
+}
+
+.item-option:hover {
+  background-color: #dadada;
+}
+
+.info-user:hover .setting-option {
+  display: inline-flex !important;
 }
 
 @media only screen and (max-width: 820px) {

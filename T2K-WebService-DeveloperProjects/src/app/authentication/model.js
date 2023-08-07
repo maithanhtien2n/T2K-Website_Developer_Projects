@@ -7,10 +7,11 @@ require("dotenv").config();
 module.exports = {
   registerMD: async ({
     full_name,
+    phone_number,
+    day_of_birth,
+    gender,
     user_name,
     password,
-    birth_date,
-    gender,
   }) => {
     // Mã hóa mật khẩu
     const hashedPassword = bcrypt.hashSync(password, 10);
@@ -31,8 +32,10 @@ module.exports = {
       await UsersInfo.create({
         account_id: account.account_id,
         full_name,
-        birth_date,
+        phone_number,
+        day_of_birth,
         gender,
+        account_money: 0,
       });
 
       return "Đăng ký tài khoản thành công!";
@@ -52,7 +55,10 @@ module.exports = {
       return {
         account_id: account.account_id,
         token: jwt.sign(
-          { user_name: account.user_name },
+          {
+            account_id: account.account_id,
+            user_name: account.user_name,
+          },
           process.env.JWT_SECRET,
           { expiresIn: "1h" }
         ),
@@ -65,12 +71,7 @@ module.exports = {
   userInfoMD: async ({ account_id, user_name }) => {
     try {
       const userInfo = await UsersInfo.findOne({ where: { account_id } });
-
-      if (userInfo) {
-        return userInfo;
-      } else {
-        return `Không tìm thấy thông tin người dùng có account_id là ${account_id}`;
-      }
+      return { account_id, user_name, user_info: userInfo };
     } catch (error) {
       throw error;
     }

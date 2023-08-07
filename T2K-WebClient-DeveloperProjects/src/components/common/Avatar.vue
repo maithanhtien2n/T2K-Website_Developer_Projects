@@ -1,14 +1,20 @@
-<script setup></script>
+<script setup>
+const props = defineProps({
+  value: {
+    type: Object,
+    required: false,
+    default: () => {},
+  },
+});
+</script>
 
 <template>
   <div class="flex gap-2">
-    <img
-      class="avatar on-click"
-      src="https://genk.mediacdn.vn/2019/4/2/photo-1-15541780148131777189878.jpg"
-      alt=""
-    />
-    <div class="flex flex-column gap-2 on-click">
-      <span style="font-size: 0.9rem" class="font-bold">Tiện Thanh</span>
+    <img class="avatar on-click" :src="props?.value?.image" alt="Lỗi ảnh" />
+    <div class="flex flex-column gap-1 on-click">
+      <span style="font-size: 0.9rem" class="font-bold">{{
+        props?.value?.name
+      }}</span>
       <slot />
     </div>
   </div>

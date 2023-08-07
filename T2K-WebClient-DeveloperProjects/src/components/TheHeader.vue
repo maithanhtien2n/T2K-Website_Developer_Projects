@@ -1,17 +1,22 @@
 <script setup>
-import SearchBox from "@/components/header/SearchBox.vue";
-import Category from "@/components/header/Category.vue";
-import PopupAuth from "@/components/PopupAuth.vue";
-import { reactive } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { StoreApp } from "@/services/stores";
+import { onMounted, reactive } from "vue";
+import { appLocalStorage } from "@/utils";
 import { onLoadingPageRepeat } from "@/utils";
+import { useRoute, useRouter } from "vue-router";
+import PopupAuth from "@/components/PopupAuth.vue";
+import Category from "@/components/header/Category.vue";
+import { StoreApp, STORE_CART } from "@/services/stores";
+import SearchBox from "@/components/header/SearchBox.vue";
 
 const ROUTER = useRouter();
 
 const ROUTE = useRoute();
 
+const { userInfo } = appLocalStorage();
+
 const { onActionLoadingActive } = StoreApp();
+
+const { onGetterCarts } = STORE_CART.StoreCart();
 
 const data = reactive({
   displaySearch: "translateX(-100%)",
@@ -81,9 +86,11 @@ const onClickToCart = () => {
         >
           <i class="pi pi-shopping-cart text-2xl text-900 on-click" />
           <span
+            v-if="onGetterCarts?.length"
             class="count-cart bg-main-color text-white absolute font-bold flex align-items-center justify-content-center border-circle"
-            >12</span
           >
+            {{ onGetterCarts?.length }}
+          </span>
         </div>
 
         <Category @onEmitOpenPopupAuth="data.displayLogin = true" />

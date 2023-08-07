@@ -1,11 +1,25 @@
 <script setup>
 import { formatToVND } from "@/utils";
 import { reactive, onMounted } from "vue";
-import { StoreApp } from "@/services/stores";
+import { StoreApp, STORE_PRODUCT } from "@/services/stores";
 import { onLoadingPage } from "@/utils";
 import Evaluate from "./components/Evaluate.vue";
+import { useRoute } from "vue-router";
+
+const ROUTE = useRoute();
 
 const { onActionLoadingActive } = StoreApp();
+
+const { onActionGetProductDetail, onGetterProductDetail: productDetail } =
+  STORE_PRODUCT.StoreProduct();
+
+const onUpdateProductDetail = () => {
+  onActionGetProductDetail(ROUTE.params.id);
+};
+
+onMounted(() => {
+  onActionGetProductDetail(ROUTE.params.id);
+});
 
 const products = reactive([
   {
@@ -51,7 +65,7 @@ onLoadingPage(onActionLoadingActive);
         <div class="col-left col-5 h-20rem p-0">
           <img
             class="w-full h-full object-fit-cover"
-            src="https://imagenes.20minutos.es/files/image_654_369/uploads/imagenes/2017/05/09/442004.jpg"
+            :src="productDetail?.image"
             alt=""
           />
         </div>
@@ -59,34 +73,45 @@ onLoadingPage(onActionLoadingActive);
         <!-- Right -->
         <div class="col-right col-7 p-3 flex flex-column gap-3">
           <span class="title font-bold text-2xl text-main-color">
-            Làm thế nào để học HTML và CSS từ đầu một cách nhanh chóng?
+            {{ productDetail?.name }}
           </span>
 
           <div class="flex gap-3 text-700">
-            <span class="flex align-items-center gap-1">
-              <i style="color: yellow" class="pi pi-star-fill" /> 5
+            <span class="flex gap-1">
+              <i class="pi pi-star-fill text-main-color" />
+              {{ productDetail?.total_evaluate }}
             </span>
             <span>|</span>
-            <span>55 đánh giá</span>
+            <span>{{ productDetail?.amount_evaluate }} đánh giá</span>
             <span>|</span>
-            <span>6,8 đã bán</span>
+            <span>{{ productDetail?.sold }} đã bán</span>
           </div>
 
           <div class="flex gap-3 bg-black-alpha-10 p-3">
-            <span class="line-through text-800">
-              {{ formatToVND(500000) }}
+            <span
+              v-if="productDetail?.price_sale"
+              class="line-through text-800"
+            >
+              {{ formatToVND(productDetail?.price) }}
             </span>
 
             <div class="flex flex-column gap-2">
               <div class="flex align-items-center gap-3">
                 <span class="text-2xl font-bold p-error">
-                  {{ formatToVND(350000) }}
+                  {{
+                    formatToVND(
+                      productDetail?.price_sale
+                        ? productDetail?.price_sale
+                        : productDetail?.price
+                    )
+                  }}
                 </span>
                 <span
+                  v-if="productDetail?.sale"
                   style="padding-top: 0.3rem !important"
                   class="bg-main-color p-1 px-2 text-white text-custom-mini border-round-2xl"
                 >
-                  Giảm 20%
+                  {{ productDetail?.sale }}
                 </span>
               </div>
               <div
@@ -112,22 +137,10 @@ onLoadingPage(onActionLoadingActive);
       <div class="border-top-1 text-300 pt-3 mt-2 flex flex-column gap-1">
         <span class="font-bold text-800">Mô tả sản phẩm</span>
 
-        <div class="line-height-3 text-800">
-          1. CÔNG DỤNG Kìm Bóp Tập Cơ Tay ✦ Tăng sức mạnh cho tay sẽ giúp bạn
-          giữ tạ trong thời gian lâu hơn khi tham gia tập thể hình; tăng sức
-          mạnh vung vợt lên đáng kể khi chơi cầu lông, Tennis; giúp ích khi tập
-          luyện thể dục dụng cụ hoặc tập leo núi,... ✦ Tăng độ bền cho đôi tay:
-          từ đó tăng khả năng cầm nắm cho đôi tay của bạn. Chẳng hạn, bạn sẽ
-          xách được vali hay túi nặng với trọng lượng lớn hơn và đi được quãng
-          đường dài hơn so với lúc chưa tập. Bạn sẽ tăng được sức chịu đựng của
-          đôi tay và sẽ không dễ dàng bị khuất phục trước sự mệt mỏi để mang
-          chúng đi khắp nơi ✦ Tăng cơ bắp cho cẳng tay: Theo nhiều huấn luyện
-          viên thể hình, nếu muốn cổ tay ấn tượng hơn và to hơn người khác thì
-          bạn nên tập luyện với kìm bóp tay thường xuyên. ✦ Kìm bóp tay sẽ hoạt
-          động để rèn luyện cho các ngón tay của bạn một cách độc lập, từ đó cải
-          thiện được sự khéo léo cho đôi tay ✦ Giúp tuần hoàn máu, giúp giảm
-          stress hiệu quả và đồng thời giúp tăng cường sức khỏe
-        </div>
+        <div
+          v-html="productDetail?.description"
+          class="line-height-3 text-800"
+        />
       </div>
     </div>
 
@@ -137,7 +150,14 @@ onLoadingPage(onActionLoadingActive);
     </CardBody>
 
     <!-- Đánh giá của người dùng -->
-    <Evaluate />
+    <Evaluate
+      :value="{
+        total_evaluate: productDetail?.total_evaluate,
+        evaluate: productDetail?.evaluate || [],
+        amount_evaluate: productDetail?.amount_evaluate,
+      }"
+      @onEmitUpdateProductDetail="onUpdateProductDetail"
+    />
   </div>
 </template>
 

@@ -11,18 +11,8 @@ module.exports = (router) => {
 
   // API lấy thông tin người dùng
   router.get(
-    `${commonRoute}/user-info/:id`,
+    `${commonRoute}/user-info`,
     authenticateToken,
     controller.userInfoCT
   );
-
-  // API xác thực token
-  router.post("/api/v1/token-authentication", authenticateToken, (req, res) => {
-    res.json({
-      success: true,
-      statusCode: 200,
-      statusValue: "Xác thực token thành công!",
-      data: req.username,
-    });
-  });
 };
