@@ -1,14 +1,12 @@
 <script setup>
 import { reactive } from "vue";
-import { appLocalStorage } from "@/utils";
+import { userData } from "@/utils";
 import PopupPayment from "./PopupPayment.vue";
 import { onLoadingPage, formatToVND } from "@/utils";
 import { StoreApp, STORE_CART } from "@/services/stores";
 import { useConfirm } from "primevue/useconfirm";
 
 const confirm = useConfirm();
-
-const { userInfo } = appLocalStorage();
 
 const { onActionLoadingActive } = StoreApp();
 
@@ -54,13 +52,17 @@ const onClickRemoveCart = (key, ids) => {
       switch (key) {
         case "item":
           onActionRemoveCart(ids).then((res) => {
-            if (res.success) onActionGetCarts(userInfo?.user_info?.user_id);
+            if (res.success) {
+              onActionGetCarts(userData.value?.user_info?.user_id);
+              data.selectCarts = [];
+              data.selectAllCarts = [];
+            }
           });
           break;
         case "items":
           onActionRemoveCart(ids).then((res) => {
             if (res.success) {
-              onActionGetCarts(userInfo?.user_info?.user_id);
+              onActionGetCarts(userData.value?.user_info?.user_id);
               data.selectCarts = [];
               data.selectAllCarts = [];
             }
@@ -307,7 +309,14 @@ onLoadingPage(onActionLoadingActive);
           <PopupPayment
             :disableButtonPay="data?.selectCarts?.length === 0"
             :payDetail="{
-              productsName: data.selectCarts.map(({ name }) => name),
+              user_id: userData.user_info?.user_id,
+              productsPay: data.selectCarts.map((item) => {
+                return {
+                  product_id: item?.product_id,
+                  name: item?.name,
+                  price: item?.money_number,
+                };
+              }),
               amount: data.selectCarts.length,
               totalMoney: totalMoney(),
             }"

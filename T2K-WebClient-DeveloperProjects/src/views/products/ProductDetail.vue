@@ -1,7 +1,7 @@
 <script setup>
-import { formatToVND } from "@/utils";
+import { formatToVND, userData } from "@/utils";
 import { reactive, onMounted } from "vue";
-import { StoreApp, STORE_PRODUCT } from "@/services/stores";
+import { StoreApp, STORE_PRODUCT, STORE_CART } from "@/services/stores";
 import { onLoadingPage } from "@/utils";
 import Evaluate from "./components/Evaluate.vue";
 import { useRoute } from "vue-router";
@@ -13,8 +13,16 @@ const { onActionLoadingActive } = StoreApp();
 const { onActionGetProductDetail, onGetterProductDetail: productDetail } =
   STORE_PRODUCT.StoreProduct();
 
+const { onActionGetCarts, onActionAddItemCart } = STORE_CART.StoreCart();
+
 const onUpdateProductDetail = () => {
   onActionGetProductDetail(ROUTE.params.id);
+};
+
+const onClickAddToCart = async (product_id) => {
+  const { user_id, vip } = userData?.value?.user_info;
+  const res = await onActionAddItemCart({ user_id, product_id, vip });
+  if (res.success) onActionGetCarts(user_id);
 };
 
 onMounted(() => {
@@ -64,7 +72,8 @@ onLoadingPage(onActionLoadingActive);
         <!-- Left -->
         <div class="col-left col-5 h-20rem p-0">
           <img
-            class="w-full h-full object-fit-cover"
+            style="object-fit: contain"
+            class="w-full h-full card"
             :src="productDetail?.image"
             alt=""
           />
@@ -128,7 +137,11 @@ onLoadingPage(onActionLoadingActive);
           </div>
 
           <div class="btn-action flex gap-3">
-            <Button class="btn-item" label="Thêm vào giỏ hàng" />
+            <Button
+              @click="onClickAddToCart(productDetail.product_id)"
+              class="btn-item"
+              label="Thêm vào giỏ hàng"
+            />
             <Button class="btn-item p-button-danger" label="Thanh toán ngay" />
           </div>
         </div>

@@ -6,7 +6,7 @@ module.exports = (router) => {
   // API SẢN PHẨM ---------------------------------------------------
 
   // API lấy danh sách sản phẩm
-  router.get(`${commonRoute}/products`, controller.productsCT);
+  router.post(`${commonRoute}/products`, controller.productsCT);
 
   // API lấy chi tiết sản phẩm
   router.get(`${commonRoute}/product/:id`, controller.productDetailCT);
@@ -15,18 +15,52 @@ module.exports = (router) => {
   router.post(`${commonRoute}/product`, controller.createProductsCT);
 
   // API thêm đánh giá sản phẩm
-  router.post(`${commonRoute}/product/evaluate`, controller.createEvaluateCT);
+  router.post(
+    `${commonRoute}/product/evaluate`,
+    authenticateToken,
+    controller.createEvaluateCT
+  );
 
   // -----------------------------------------------------------------
 
   // API GIỎ HÀNG ----------------------------------------------------
 
   // API Lấy danh sách giỏ hàng
-  router.get(`${commonRoute}/products/carts`, controller.cartsCT);
+  router.get(
+    `${commonRoute}/products/carts?:user_id`,
+    authenticateToken,
+    controller.cartsCT
+  );
 
   // API thêm sản phẩm vào giỏ hàng
-  router.post(`${commonRoute}/products/cart`, controller.createCartsCT);
+  router.post(
+    `${commonRoute}/products/cart`,
+    authenticateToken,
+    controller.createCartsCT
+  );
 
   // API xóa sản phẩm trong giỏ hàng
-  router.delete(`${commonRoute}/products/cart?:ids`, controller.removeCartsCT);
+  router.delete(
+    `${commonRoute}/products/cart?:ids`,
+    authenticateToken,
+    controller.removeCartsCT
+  );
+
+  // ------------------------------------------------------------------
+
+  // API ĐƠN HÀNG KHÁCH HÀNG ------------------------------------------
+
+  // API lấy danh sách đơn hàng
+  router.get(
+    `${commonRoute}/products/orders?:user_id`,
+    authenticateToken,
+    controller.ordersCT
+  );
+
+  // API thanh toán đơn hàng
+  router.post(
+    `${commonRoute}/products/order`,
+    authenticateToken,
+    controller.createOrdersCT
+  );
 };

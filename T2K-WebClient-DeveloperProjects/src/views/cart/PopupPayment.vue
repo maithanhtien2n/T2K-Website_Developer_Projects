@@ -1,8 +1,19 @@
 <script setup>
 import { reactive } from "vue";
 import { formatToVND } from "@/utils/index";
+import { StoreApp, STORE_CART } from "@/services/stores";
+import { useRouter } from "vue-router";
 
 const props = defineProps(["disableButtonPay", "payDetail"]);
+
+const ROUTER = useRouter();
+const {
+  onActionLoadingActive,
+  onActionPopupNotification,
+  onActionGetUserInfo,
+} = StoreApp();
+
+const { onActionPaymentCart, onActionGetCarts } = STORE_CART.StoreCart();
 
 const data = reactive({
   display: false,
@@ -10,6 +21,30 @@ const data = reactive({
 
 const onClickPayMent = () => {
   data.display = true;
+};
+
+const onClickConfirmPayment = (value) => {
+  onActionLoadingActive(true);
+  onActionPaymentCart(value)
+    .then(async (res) => {
+      if (res.success) {
+        data.display = false;
+        await onActionGetUserInfo();
+        await onActionGetCarts(props?.payDetail?.user_id);
+        ROUTER.push({ name: "Home" });
+        onActionPopupNotification({
+          display: true,
+          title: "Thanh toán thành công",
+          content1:
+            "Bạn đã thanh toán thành công đơn hàng của mình, vui lòng kiểm tra kho hàng để trải nghiệm sản phẩm.",
+          content2: "Tiếp tục mua hàng",
+          action: "Products",
+        });
+      }
+    })
+    .catch((error) => {
+      onActionLoadingActive(false);
+    });
 };
 </script>
 
@@ -32,15 +67,18 @@ const onClickPayMent = () => {
       <div class="flex flex-column gap-1">
         <span class="font-bold">Sản phẩm: </span>
         <div
-          v-for="(item, index) in props?.payDetail?.productsName"
+          v-for="(item, index) in props?.payDetail?.productsPay"
           :key="index"
         >
           <span
-            v-if="props?.payDetail?.productsName.length > 1"
+            v-if="props?.payDetail?.productsPay.length > 1"
             class="line-height-2"
             >-
           </span>
-          <span class="line-height-2">{{ item }}</span>
+          <span class="line-height-2">
+            {{ item?.name }}
+            <span class="p-error">({{ formatToVND(item?.price) }})</span>
+          </span>
         </div>
       </div>
 
@@ -67,7 +105,21 @@ const onClickPayMent = () => {
         label="Bỏ qua"
         class="p-button-outlined"
       />
-      <Button label="Xác nhận" />
+      <Button
+        @click="
+          onClickConfirmPayment({
+            user_id: `${props?.payDetail?.user_id}`,
+            products: props?.payDetail.productsPay.map((item) => {
+              return {
+                product_id: `${item?.product_id}`,
+                price: `${item?.price}`,
+              };
+            }),
+            total_money: props?.payDetail?.totalMoney,
+          })
+        "
+        label="Xác nhận"
+      />
     </template>
   </Dialog>
 </template>

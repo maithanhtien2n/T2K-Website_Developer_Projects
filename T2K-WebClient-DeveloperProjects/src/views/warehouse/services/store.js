@@ -17,8 +17,8 @@ export const StoreWarehouse = defineStore("StoreWarehouse", () => {
   const onGetterWarehouses = computed(() => warehouses);
 
   // Action
-  const onActionGetWarehouses = async () => {
-    const result = await onResponse(API.onApiGetWarehouses());
+  const onActionGetWarehouses = async (params) => {
+    const result = await onResponse(API.onApiGetWarehouses(params));
     return Object.assign(warehouses, [...result.data]);
   };
 

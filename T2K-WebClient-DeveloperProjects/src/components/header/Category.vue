@@ -2,8 +2,10 @@
 import { reactive, watch } from "vue";
 import { StoreApp } from "@/services/stores";
 import { useRoute, useRouter } from "vue-router";
+import PopupAuth from "@/components/PopupAuth.vue";
 import { updateAuthorizationHeader } from "@/services/api";
 import { formatToVND, onLoadingPageRepeat } from "@/utils/index";
+import { STORE_CART } from "../../services/stores";
 
 const emits = defineEmits(["onEmitOpenPopupAuth"]);
 
@@ -11,7 +13,14 @@ const ROUTE = useRoute();
 
 const ROUTER = useRouter();
 
-const { onActionLoadingActive, onGetterUserInfo: userInfo } = StoreApp();
+const {
+  onActionLoadingActive,
+  onActionLogout,
+  onGetterUserInfo: userInfo,
+  onGetterCategoryPopup,
+} = StoreApp();
+
+const { onActionLogoutCart } = STORE_CART.StoreCart();
 
 const data = reactive({
   display: {
@@ -46,10 +55,6 @@ const onClickToWarehouse = () => {
   if (data.sizeScreen < 820) onClickClosePopup();
 };
 
-const onClickOpenPopupAuth = () => {
-  emits("onEmitOpenPopupAuth");
-};
-
 const onClickItemOption = (value) => {
   onActionLoadingActive(true);
   switch (value) {
@@ -57,13 +62,19 @@ const onClickItemOption = (value) => {
       //
       break;
     case "Đăng xuất":
-      localStorage.removeItem("TOKEN");
       localStorage.removeItem("AppLocalStorage");
-      location.reload();
+      updateAuthorizationHeader(null);
+      ROUTER.push({ name: "Home" });
+      onActionLogoutCart();
+      onActionLogout();
       break;
   }
   setTimeout(() => onActionLoadingActive(false), 1000);
 };
+
+watch(onGetterCategoryPopup, () => {
+  if (data.sizeScreen < 820) onClickClosePopup();
+});
 </script>
 
 <template>
@@ -146,11 +157,7 @@ const onClickItemOption = (value) => {
 
     <!-- Thanh đăng nhập, đăng ký -->
     <div v-else class="btn-login">
-      <Button
-        @click="onClickOpenPopupAuth"
-        label="Đăng nhập"
-        class="p-button-secondary"
-      />
+      <PopupAuth />
     </div>
   </div>
 </template>

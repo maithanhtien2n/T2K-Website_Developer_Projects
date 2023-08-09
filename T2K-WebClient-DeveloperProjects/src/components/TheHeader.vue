@@ -1,9 +1,7 @@
 <script setup>
-import { onMounted, reactive } from "vue";
-import { appLocalStorage } from "@/utils";
+import { reactive } from "vue";
 import { onLoadingPageRepeat } from "@/utils";
 import { useRoute, useRouter } from "vue-router";
-import PopupAuth from "@/components/PopupAuth.vue";
 import Category from "@/components/header/Category.vue";
 import { StoreApp, STORE_CART } from "@/services/stores";
 import SearchBox from "@/components/header/SearchBox.vue";
@@ -12,18 +10,17 @@ const ROUTER = useRouter();
 
 const ROUTE = useRoute();
 
-const { userInfo } = appLocalStorage();
-
 const { onActionLoadingActive } = StoreApp();
 
 const { onGetterCarts } = STORE_CART.StoreCart();
 
 const data = reactive({
   displaySearch: "translateX(-100%)",
-  displayLogin: false,
+  resetKeySearch: false,
 });
 
 const onClickLogo = () => {
+  data.resetKeySearch = !data.resetKeySearch;
   onLoadingPageRepeat(
     ROUTE.name === "Home",
     onActionLoadingActive,
@@ -41,11 +38,6 @@ const onClickToCart = () => {
 </script>
 
 <template>
-  <PopupAuth
-    :displayLogin="data.displayLogin"
-    @onEmitClosePopupAuth="data.displayLogin = false"
-  />
-
   <div
     style="
       box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px,
@@ -67,6 +59,7 @@ const onClickToCart = () => {
       <!-- Hộp tìm kiếm -->
       <SearchBox
         :displaySearch="data.displaySearch"
+        :resetKeySearch="data.resetKeySearch"
         @onClosePopup="data.displaySearch = 'translateX(-100%)'"
       />
 
@@ -93,7 +86,7 @@ const onClickToCart = () => {
           </span>
         </div>
 
-        <Category @onEmitOpenPopupAuth="data.displayLogin = true" />
+        <Category />
       </div>
     </div>
   </div>

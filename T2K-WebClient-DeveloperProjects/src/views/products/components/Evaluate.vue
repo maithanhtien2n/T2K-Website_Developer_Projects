@@ -1,14 +1,13 @@
 <script setup>
 import { reactive } from "vue";
 import { formatDate } from "@/utils";
-import { StoreApp, STORE_PRODUCT } from "@/services/stores";
+import { userData } from "@/utils";
+import { STORE_PRODUCT } from "@/services/stores";
 import { useRoute } from "vue-router";
 
 const emits = defineEmits(["onEmitUpdateProductDetail"]);
 
 const ROUTE = useRoute();
-
-const { onGetterUserInfo: userInfo } = StoreApp();
 
 const { onActionSendEvaluate } = STORE_PRODUCT.StoreProduct();
 
@@ -20,7 +19,7 @@ const data = reactive({
 
 const onClickSendEvaluate = async () => {
   const res = await onActionSendEvaluate({
-    user_id: userInfo?.user_info?.user_id,
+    user_id: userData.value?.user_info?.user_id,
     product_id: ROUTE.params.id,
     start_amount: 0,
     content: data.content,
@@ -48,13 +47,13 @@ const onClickSendEvaluate = async () => {
 
     <div class="flex flex-column gap-3">
       <div
-        v-if="userInfo?.user_info?.image"
+        v-if="userData?.user_info?.image"
         class="flex flex-column gap-2 bg-main-right p-3 border-round-lg"
       >
         <Avatar
           :value="{
-            image: userInfo?.user_info?.image,
-            name: userInfo?.user_info?.full_name,
+            image: userData?.user_info?.image,
+            name: userData?.user_info?.full_name,
           }"
         >
           <div class="text-custom-mini">{{ formatDate(new Date()) }}</div>

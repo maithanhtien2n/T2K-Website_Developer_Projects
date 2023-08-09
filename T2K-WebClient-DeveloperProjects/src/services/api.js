@@ -1,4 +1,5 @@
 import axios from "axios";
+import { accessToken } from "@/utils";
 
 export * as API_HOME from "@/views/home/services/api";
 export * as API_CART from "@/views/cart/services/api";
@@ -34,7 +35,9 @@ export const API_APP = new ApiApp();
 const AxiosInstance = axios.create({
   // baseURL: "http://localhost:3000/api/v1/",
 
-  baseURL: "http://192.168.1.7:3000/api/v1/",
+  baseURL: "http://192.168.1.4:3000/api/v1/",
+
+  // baseURL: "http://192.168.88.21:3000/api/v1/",
 });
 
 const updateAuthorizationHeader = (token) => {
@@ -45,6 +48,6 @@ const updateAuthorizationHeader = (token) => {
   }
 };
 
-updateAuthorizationHeader(JSON.parse(localStorage.getItem("TOKEN")));
+updateAuthorizationHeader(accessToken.value);
 
 export { AxiosInstance, updateAuthorizationHeader };

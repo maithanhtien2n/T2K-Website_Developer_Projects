@@ -1,10 +1,8 @@
 <script setup>
-import { appLocalStorage } from "@/utils";
+import { userData } from "@/utils";
 import { useRoute, useRouter } from "vue-router";
 import { StoreApp, STORE_CART } from "@/services/stores";
 import { formatToVND, onLoadingPageRepeat } from "@/utils/index";
-
-const { userInfo } = appLocalStorage();
 
 const ROUTER = useRouter();
 
@@ -23,7 +21,7 @@ const props = defineProps({
 });
 
 const onClickAddToCart = async (product_id) => {
-  const { user_id, vip } = userInfo?.user_info;
+  const { user_id, vip } = userData?.value?.user_info;
   const res = await onActionAddItemCart({ user_id, product_id, vip });
   if (res.success) onActionGetCarts(user_id);
 };

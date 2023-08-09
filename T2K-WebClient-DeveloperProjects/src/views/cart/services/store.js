@@ -16,6 +16,11 @@ export const StoreCart = defineStore("StoreCart", () => {
   // Getter
   const onGetterCarts = computed(() => carts);
 
+  // Methos
+  const onActionLogoutCart = () => {
+    carts.value = [];
+  };
+
   // Action
   const onActionGetCarts = async (params) => {
     const result = await onResponse(API.onApiGetCarts(params));
@@ -31,12 +36,19 @@ export const StoreCart = defineStore("StoreCart", () => {
     return await onResponse(API.onApiRemoveCart(params), true);
   };
 
+  const onActionPaymentCart = async (args) => {
+    return await onResponse(API.onApiPaymentCart(args));
+  };
+
   return {
     // Getter
     onGetterCarts,
     // Action
+    onActionLogoutCart,
+
     onActionGetCarts,
     onActionAddItemCart,
     onActionRemoveCart,
+    onActionPaymentCart,
   };
 });

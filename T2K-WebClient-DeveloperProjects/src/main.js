@@ -23,6 +23,7 @@ import CardProducts from "@/components/CardProducts.vue";
 import Avatar from "@/components/common/Avatar.vue";
 import RatingCustom from "@/components/common/RatingCustom.vue";
 import BackgroundRemovePopup from "@/components/common/BackgroundRemovePopup.vue";
+import PopupNotification from "@/components/common/PopupNotification.vue";
 
 import InputText from "primevue/inputtext";
 import Password from "primevue/password";
@@ -65,6 +66,7 @@ app.component("CardProducts", CardProducts);
 app.component("Avatar", Avatar);
 app.component("RatingCustom", RatingCustom);
 app.component("BackgroundRemovePopup", BackgroundRemovePopup);
+app.component("PopupNotification", PopupNotification);
 
 app.component("InputText", InputText);
 app.component("Password", Password);

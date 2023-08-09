@@ -1,13 +1,11 @@
 <script setup>
 import { onMounted } from "vue";
-import { appLocalStorage } from "@/utils";
+import { accessToken } from "@/utils";
 import TheHeader from "@/components/TheHeader.vue";
 import TheFooter from "./components/TheFooter.vue";
 import Loading from "@/components/common/Loading.vue";
 import { StoreApp, STORE_CART } from "@/services/stores";
-import { updateAuthorizationHeader } from "@/services/api";
-
-const { token } = appLocalStorage();
+import PopupAdvertisement from "@/components/common/PopupAdvertisement.vue";
 
 const { onActionGetUserInfo } = StoreApp();
 
@@ -15,17 +13,21 @@ const { onActionGetCarts } = STORE_CART.StoreCart();
 
 onMounted(() => {
   window.scrollTo(0, 0);
-  if (token) {
+  if (accessToken.value)
     onActionGetUserInfo().then((userInfo) => {
-      localStorage.setItem("AppLocalStorage", JSON.stringify(userInfo));
       onActionGetCarts(userInfo?.user_info?.user_id);
     });
-  }
 });
 </script>
 
 <template>
-  <Toast class="w-20rem line-height-2" position="top-left" />
+  <!-- Popup -->
+  <PopupAdvertisement />
+
+  <Toast class="toast w-20rem line-height-2" position="top-left" />
+
+  <PopupNotification />
+  <!-- ----------------- -->
 
   <div class="flex flex-column gap-3">
     <TheHeader />
@@ -38,4 +40,10 @@ onMounted(() => {
   <Loading />
 </template>
 
-<style scoped></style>
+<style scoped>
+@media only screen and (max-width: 750px) {
+  .toast {
+    width: 20rem !important;
+  }
+}
+</style>

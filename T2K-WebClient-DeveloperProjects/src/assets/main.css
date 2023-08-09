@@ -132,6 +132,18 @@
     word-break: break-word;
 }
 
+.fixed-text-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: normal;
+    white-space: pre-line;
+    word-break: break-word;
+    /* white-space: nowrap; */
+}
+
 /* Ghi đề primevue */
 .banner .p-carousel-indicators {
     padding-top: 0.5rem !important;

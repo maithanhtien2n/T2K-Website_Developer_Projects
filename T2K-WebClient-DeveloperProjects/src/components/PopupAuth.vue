@@ -4,11 +4,8 @@ import Register from "@/components/auth/Register.vue";
 import { reactive, watch } from "vue";
 import { StoreApp } from "@/services/stores";
 
-const { onActionLoadingActive } = StoreApp();
-
-const props = defineProps(["displayLogin"]);
-
-const emits = defineEmits(["onEmitClosePopupAuth"]);
+const { onActionLoadingActive, onGetterDisplayPopupAuth: displayPopupAuth } =
+  StoreApp();
 
 const data = reactive({
   title: "Đăng nhập",
@@ -41,22 +38,22 @@ const onClosePopupAuth = () => {
   data.display = false;
 };
 
-watch(
-  () => props.displayLogin,
-  (value) => {
-    data.display = value;
-  }
-);
+const onClickOpenPopupAuth = () => {
+  data.display = true;
+};
 
-watch(
-  () => data.display,
-  (value) => {
-    if (!value) emits("onEmitClosePopupAuth");
-  }
-);
+watch(displayPopupAuth, () => {
+  data.display = true;
+});
 </script>
 
 <template>
+  <Button
+    @click="onClickOpenPopupAuth"
+    label="Đăng nhập"
+    class="p-button-secondary"
+  />
+
   <Dialog
     v-model:visible="data.display"
     modal

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import App from "@/App.vue";
 import { API_APP } from "./api";
+import { StoreApp } from "./stores";
 
 import RoutesHome from "@/views/home/services/routes";
 import RoutesProducts from "@/views/products/services/routes";
@@ -12,9 +13,6 @@ const routes = [
     path: "",
     name: "App",
     component: App,
-    meta: {
-      requiresAuth: true,
-    },
     children: [
       ...RoutesHome,
       ...RoutesProducts,
@@ -34,22 +32,24 @@ const router = createRouter({
   routes,
 });
 
-// router.beforeEach((to, from, next) => {
-//   window.scrollTo(0, 0);
+router.beforeEach((to, from, next) => {
+  window.scrollTo(0, 0);
 
-//   if (to.meta.requiresAuth) {
-//     API_APP.onApiGetGetUserInfo(
-//       JSON.parse(localStorage.getItem("AppLocalStorage"))?.account_id
-//     ).then(({ data: res }) => {
-//       if (res.success && to.name !== "Login") {
-//         next();
-//       } else {
-//         return next({ name: "Login" });
-//       }
-//     });
-//   } else {
-//     next();
-//   }
-// });
+  if (to.meta.requiresAuth) {
+    API_APP.onApiGetUserInfo().then(({ data: res }) => {
+      if (res.success) {
+        next();
+      } else {
+        setTimeout(() => {
+          StoreApp().onActionLoadingActive(false);
+          StoreApp().onActionOpenPopupAuth();
+        }, 500);
+        return next({ name: "Home" });
+      }
+    });
+  } else {
+    next();
+  }
+});
 
 export default router;

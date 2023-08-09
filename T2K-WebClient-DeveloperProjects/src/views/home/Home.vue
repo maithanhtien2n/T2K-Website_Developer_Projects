@@ -2,14 +2,14 @@
 import Banner from "./components/Banner.vue";
 import FeaturedProductsVue from "./components/FeaturedProducts.vue";
 import NewProducts from "./components/NewProducts.vue";
-import { StoreApp, STORE_HOME } from "@/services/stores";
+import { StoreApp, STORE_PRODUCT } from "@/services/stores";
 import { onLoadingPage } from "@/utils";
 import { onMounted } from "vue";
 
 const { onActionLoadingActive } = StoreApp();
 
 const { onActionGetProducts, onGetterProducts: products } =
-  STORE_HOME.StoreHome();
+  STORE_PRODUCT.StoreProduct();
 
 onMounted(() => {
   onActionGetProducts();

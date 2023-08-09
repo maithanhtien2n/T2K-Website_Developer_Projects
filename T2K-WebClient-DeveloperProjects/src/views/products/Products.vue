@@ -18,7 +18,7 @@ const data = reactive({
 
 const onChangeTitle = () => {
   return ROUTE.query.search
-    ? `Kết quả tìm kiếm cho: '${data.keyWord}'`
+    ? `Kết quả tìm kiếm cho: " ${data.keyWord} "`
     : "Tất cả sản phẩm";
 };
 
@@ -49,7 +49,7 @@ const filterOptions = reactive([
 ]);
 
 onMounted(() => {
-  onActionGetProducts();
+  onActionGetProducts({ key_search: data.keyWord });
 });
 
 onLoadingPage(onActionLoadingActive);
@@ -70,8 +70,18 @@ onLoadingPage(onActionLoadingActive);
       <CardProducts :value="products" />
     </CardBody>
 
-    <div v-if="ROUTE.query.search" class="text-center text-600 line-height-2">
+    <div
+      v-if="ROUTE.query.search && products?.length > 0"
+      class="text-center text-600 line-height-2"
+    >
       Kết quả tìm kiếm chỉ bao gồm những nội dung hiển thị với bạn.
+    </div>
+
+    <div
+      v-if="ROUTE.query.search && products?.length === 0"
+      class="text-center text-600 line-height-2"
+    >
+      Không tìm thấy kết quả nào.
     </div>
   </div>
 </template>

@@ -5,7 +5,9 @@ module.exports = {
   // API sản phẩm
 
   productsCT: async (req, res) => {
-    await onResponse(req, res, model.productsMD, {});
+    await onResponse(req, res, model.productsMD, {
+      data: ({ key_search } = req.body),
+    });
   },
 
   productDetailCT: async (req, res) => {
@@ -51,6 +53,23 @@ module.exports = {
     await onResponse(req, res, model.removeCartsMD, {
       data: { ids },
       message: "Đã xóa khỏi giỏ hàng",
+    });
+  },
+
+  // ----------------------------------------------------------------
+
+  // API đơn hàng khách hàng
+  ordersCT: async (req, res) => {
+    await onResponse(req, res, model.ordersMD, {
+      data: ({ user_id } = req.query),
+    });
+  },
+
+  createOrdersCT: async (req, res) => {
+    await onResponse(req, res, model.createOrdersCT, {
+      checkData: ["user_id"],
+      data: ({ user_id, products, total_money } = req.body),
+      message: "Thanh toán thành công",
     });
   },
 };

@@ -7,7 +7,7 @@ const authenticateToken = (req, res, next) => {
   const token = authHeader && authHeader.split(" ")[1];
   try {
     if (!token) {
-      throwError(250, "Bạn cần mã token để call được api!");
+      throwError(250, "Vui lòng đăng nhập để sử dụng tính năng này!");
     }
     jwt.verify(token, process.env.JWT_SECRET, (error, data) => {
       if (error) {

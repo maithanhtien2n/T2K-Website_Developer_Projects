@@ -26,6 +26,14 @@ class ApiCart {
       },
     });
   };
+
+  onApiPaymentCart = async (args) => {
+    return await AxiosInstance({
+      method: "POST",
+      url: "products/order",
+      data: args,
+    });
+  };
 }
 
 export const API_CART = new ApiCart();

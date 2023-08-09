@@ -126,6 +126,46 @@ const Carts = sequelize.define(
   }
 );
 
+const CustomerOrders = sequelize.define(
+  "CustomerOrders",
+  {
+    order_id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
+    order_code: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    product_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    purchase_price: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+  },
+  {
+    tableName: "customer_orders",
+    timestamps: false,
+  }
+);
+
 // Lấy mảng thì dùng hasMany lấy object thì dùng belongsTo (nếu mà khác field thì dùng này foreignKey - sourceKey)
 Carts.belongsTo(Products, { foreignKey: "product_id", as: "product" });
 
@@ -133,9 +173,12 @@ Products.hasMany(Ratings, { foreignKey: "product_id", as: "evaluate" });
 
 Ratings.belongsTo(UsersInfo, { foreignKey: "user_id", as: "user" });
 
+CustomerOrders.belongsTo(Products, { foreignKey: "product_id", as: "orders" });
+
 module.exports = {
   Products,
   Ratings,
   Carts,
   UsersInfo,
+  CustomerOrders,
 };

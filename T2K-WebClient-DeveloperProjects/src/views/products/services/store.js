@@ -9,7 +9,7 @@ export const StoreProduct = defineStore("StoreProduct", () => {
   const API = API_PRODUCT.API_PRODUCT;
 
   // State
-  const products = reactive([]);
+  const products = ref([]);
   const productDetail = ref({});
 
   // Getter
@@ -17,9 +17,9 @@ export const StoreProduct = defineStore("StoreProduct", () => {
   const onGetterProductDetail = computed(() => productDetail);
 
   // Action
-  const onActionGetProducts = async () => {
-    const result = await onResponse(API.onApiGetProducts());
-    return Object.assign(products, [...result.data]);
+  const onActionGetProducts = async (args) => {
+    const result = await onResponse(API.onApiGetProducts(args));
+    return (products.value = result.data);
   };
 
   const onActionGetProductDetail = async (params) => {

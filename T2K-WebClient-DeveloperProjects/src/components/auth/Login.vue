@@ -2,13 +2,16 @@
 import * as Yup from "yup";
 import { reactive, ref } from "vue";
 import { Form, Field } from "vee-validate";
-import { StoreApp } from "@/services/stores";
+import { appLocalStorage } from "@/utils";
+import { StoreApp, STORE_CART } from "@/services/stores";
 import { updateAuthorizationHeader } from "@/services/api";
 
 const emits = defineEmits(["onEmitClosePopupAuth"]);
 
 const { onActionLoadingActive, onActionLogin, onActionGetUserInfo } =
   StoreApp();
+
+const { onActionGetCarts } = STORE_CART.StoreCart();
 
 const formLogin = ref(null);
 
@@ -37,10 +40,20 @@ const onClickButtonLogin = async (value) => {
   onActionLoadingActive(true);
   const res = await onActionLogin(value);
   if (res?.success) {
-    localStorage.setItem("TOKEN", JSON.stringify(res?.data?.token));
     updateAuthorizationHeader(res?.data?.token);
+    onActionGetUserInfo().then((userInfo) => {
+      // localStorage.setItem(
+      //   "AppLocalStorage",
+      //   JSON.stringify({
+      //     userData: userInfo,
+      //     accessToken: res?.data?.token,
+      //   })
+      // );
+      appLocalStorage.value.userData = userInfo;
+      appLocalStorage.value.accessToken = res?.data?.token;
+      onActionGetCarts(userInfo?.user_info?.user_id);
+    });
     emits("onEmitClosePopupAuth");
-    location.reload();
     setTimeout(() => onActionLoadingActive(false), 1000);
   }
 };

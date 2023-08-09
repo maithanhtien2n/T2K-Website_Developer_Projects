@@ -1,10 +1,13 @@
 import { AxiosInstance } from "@/services/api";
 
 class ApiHome {
-  onApiGetProducts = async () => {
+  onApiGetProducts = async (args) => {
     return await AxiosInstance({
-      method: "GET",
+      method: "POST",
       url: "products",
+      data: {
+        key_search: args?.key_search,
+      },
     });
   };
 }
