@@ -4,7 +4,7 @@ import { formatToVND, vip } from "@/utils";
 import { StoreApp, STORE_CART } from "@/services/stores";
 import { useRouter } from "vue-router";
 
-const props = defineProps(["disableButtonPay", "payDetail"]);
+const props = defineProps(["payDetail"]);
 
 const ROUTER = useRouter();
 const {
@@ -18,6 +18,10 @@ const { onActionPaymentCart, onActionGetCarts } = STORE_CART.StoreCart();
 const data = reactive({
   display: false,
 });
+
+const onClickPayMent = () => {
+  data.display = true;
+};
 
 const onClickConfirmPayment = (value) => {
   onActionLoadingActive(true);
@@ -47,9 +51,8 @@ const onClickConfirmPayment = (value) => {
 <template>
   <Button
     @click="data.display = true"
-    :disabled="props?.disableButtonPay"
-    class="btn"
-    label="Thanh toán"
+    class="btn-item p-button-danger"
+    label="Thanh toán ngay"
   />
 
   <Dialog v-model:visible="data.display" modal class="w-30rem">
@@ -138,6 +141,12 @@ const onClickConfirmPayment = (value) => {
 <style scoped>
 @media only screen and (max-width: 750px) {
   .btn {
+    width: 100% !important;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .btn-item {
     width: 100% !important;
   }
 }

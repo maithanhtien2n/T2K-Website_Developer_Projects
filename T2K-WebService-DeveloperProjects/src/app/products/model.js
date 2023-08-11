@@ -191,7 +191,7 @@ module.exports = {
             ? price_sale
             : price_sale
             ? price_sale - (price_sale * item?.vip) / 100
-            : item?.product?.price,
+            : item?.product?.price - (item?.product?.price * item?.vip) / 100,
           created_at: item?.created_at,
           updated_at: item?.updated_at,
         };
@@ -268,18 +268,20 @@ module.exports = {
             },
           ],
         })),
-      ].map((item) => {
-        return {
-          id_order: item?.id_order,
-          product_id: item?.orders?.product_id,
-          order_code: item?.order_code,
-          image: item?.orders?.image,
-          name: item?.orders?.name,
-          price: item?.purchase_price,
-          created_at: item?.created_at,
-          updated_at: item?.updated_at,
-        };
-      });
+      ]
+        .map((item) => {
+          return {
+            id_order: item?.id_order,
+            product_id: item?.orders?.product_id,
+            order_code: item?.order_code,
+            image: item?.orders?.image,
+            name: item?.orders?.name,
+            price: item?.purchase_price,
+            created_at: item?.created_at,
+            updated_at: item?.updated_at,
+          };
+        })
+        .reverse();
     } catch (error) {
       throw error;
     }

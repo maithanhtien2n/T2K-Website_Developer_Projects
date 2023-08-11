@@ -1,19 +1,27 @@
 <script setup>
-import { formatToVND, userData } from "@/utils";
+import { formatToVND, userData, vip } from "@/utils";
 import { reactive, onMounted } from "vue";
 import { StoreApp, STORE_PRODUCT, STORE_CART } from "@/services/stores";
 import { onLoadingPage } from "@/utils";
+import PopupPayment from "./components/PopupPayment.vue";
 import Evaluate from "./components/Evaluate.vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const ROUTE = useRoute();
 
-const { onActionLoadingActive } = StoreApp();
+const ROUTER = useRouter();
+
+const {
+  onActionLoadingActive,
+  onActionGetUserInfo,
+  onActionPopupNotification,
+} = StoreApp();
 
 const { onActionGetProductDetail, onGetterProductDetail: productDetail } =
   STORE_PRODUCT.StoreProduct();
 
-const { onActionGetCarts, onActionAddItemCart } = STORE_CART.StoreCart();
+const { onActionGetCarts, onActionAddItemCart, onActionPaymentCart } =
+  STORE_CART.StoreCart();
 
 const onUpdateProductDetail = () => {
   onActionGetProductDetail(ROUTE.params.id);
@@ -23,6 +31,30 @@ const onClickAddToCart = async (product_id) => {
   const { user_id, vip } = userData?.value?.user_info;
   const res = await onActionAddItemCart({ user_id, product_id, vip });
   if (res.success) onActionGetCarts(user_id);
+};
+
+const onClickPayNow = (value) => {
+  onActionLoadingActive(true);
+  onActionPaymentCart(value)
+    .then(async (res) => {
+      if (res.success) {
+        data.display = false;
+        await onActionGetUserInfo();
+        await onActionGetCarts(props?.payDetail?.user_id);
+        ROUTER.push({ name: "Home" });
+        onActionPopupNotification({
+          display: true,
+          title: "Thanh toán thành công",
+          content1:
+            "Bạn đã thanh toán thành công đơn hàng của mình, vui lòng kiểm tra kho hàng để trải nghiệm sản phẩm.",
+          content2: "Tiếp tục mua hàng",
+          action: "Products",
+        });
+      }
+    })
+    .catch((error) => {
+      onActionLoadingActive(false);
+    });
 };
 
 onMounted(() => {
@@ -142,7 +174,32 @@ onLoadingPage(onActionLoadingActive);
               class="btn-item"
               label="Thêm vào giỏ hàng"
             />
-            <Button class="btn-item p-button-danger" label="Thanh toán ngay" />
+
+            <!-- Thanh toán ngay -->
+            <PopupPayment
+              :payDetail="{
+                user_id: `${userData?.user_info?.user_id}`,
+                productsPay: [{ ...productDetail }].map((item) => ({
+                  product_id: `${item?.product_id}`,
+                  name: item?.name,
+                  originalPrice: productDetail?.price_sale
+                    ? productDetail?.price_sale
+                    : productDetail?.price,
+                  price: `${
+                    productDetail?.price_sale
+                      ? productDetail?.price_sale -
+                        (productDetail?.price_sale * vip()) / 100
+                      : productDetail?.price -
+                        (productDetail?.price * vip()) / 100
+                  }`,
+                })),
+                amount: 1,
+                totalMoney: productDetail?.price_sale
+                  ? productDetail?.price_sale -
+                    (productDetail?.price_sale * vip()) / 100
+                  : productDetail?.price - (productDetail?.price * vip()) / 100,
+              }"
+            />
           </div>
         </div>
       </div>

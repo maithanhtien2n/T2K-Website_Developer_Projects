@@ -91,7 +91,9 @@ onLoadingPage(onActionLoadingActive);
 
               <div class="item col-4">
                 <span v-show="onHide()">Ngày mua:</span>
-                <span class="text-800">{{ formatDate(item?.created_at) }}</span>
+                <span class="text-800">{{
+                  formatDate(item?.created_at, true)
+                }}</span>
               </div>
 
               <div class="item col-3 text-right">

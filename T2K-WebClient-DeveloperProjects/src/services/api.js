@@ -35,9 +35,9 @@ export const API_APP = new ApiApp();
 const AxiosInstance = axios.create({
   // baseURL: "http://localhost:3000/api/v1/",
 
-  baseURL: "http://192.168.1.4:3000/api/v1/",
+  // baseURL: "http://192.168.1.4:3000/api/v1/",
 
-  // baseURL: "http://192.168.88.21:3000/api/v1/",
+  baseURL: "http://192.168.88.21:3000/api/v1/",
 });
 
 const updateAuthorizationHeader = (token) => {

@@ -180,7 +180,7 @@ onLoadingPage(onActionLoadingActive);
                 :class="{ 'p-disabled': data?.selectCarts?.length < 2 }"
                 class="col-2 font-bold text-right p-error on-click"
               >
-                Xóa nhiều
+                Xóa
               </div>
             </div>
           </div>
@@ -310,13 +310,14 @@ onLoadingPage(onActionLoadingActive);
             :disableButtonPay="data?.selectCarts?.length === 0"
             :payDetail="{
               user_id: userData.user_info?.user_id,
-              productsPay: data.selectCarts.map((item) => {
-                return {
-                  product_id: item?.product_id,
-                  name: item?.name,
-                  price: item?.money_number,
-                };
-              }),
+              productsPay: data.selectCarts.map((item) => ({
+                product_id: item?.product_id,
+                name: item?.name,
+                originalPrice: item?.price_sale
+                  ? item?.price_sale
+                  : item?.price,
+                price: item?.money_number,
+              })),
               amount: data.selectCarts.length,
               totalMoney: totalMoney(),
             }"

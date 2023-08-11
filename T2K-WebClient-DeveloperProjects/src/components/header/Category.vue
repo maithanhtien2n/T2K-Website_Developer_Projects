@@ -1,4 +1,5 @@
 <script setup>
+import { accessToken, onDeleteAppLocalStorage } from "@/utils";
 import { reactive, watch } from "vue";
 import { StoreApp } from "@/services/stores";
 import { useRoute, useRouter } from "vue-router";
@@ -27,7 +28,7 @@ const data = reactive({
     transform: window.innerWidth > 820 ? "translateX(0)" : "translateX(-100%)",
   },
   sizeScreen: window.innerWidth,
-  settingOptions: ["Hồ sơ", "Đăng xuất"],
+  settingOptions: ["Tài khoản", "Đăng xuất"],
 });
 
 window.addEventListener("resize", () => {
@@ -41,6 +42,8 @@ window.addEventListener("resize", () => {
 const onActive = () => {
   if (data.sizeScreen < 820) return data.display.transform === "translateX(0)";
 };
+
+const onHide = () => data.sizeScreen < 750 && accessToken.value;
 
 const onClickClosePopup = () => {
   data.display.transform = "translateX(-100%)";
@@ -58,13 +61,12 @@ const onClickToWarehouse = () => {
 const onClickItemOption = (value) => {
   onActionLoadingActive(true);
   switch (value) {
-    case "Hồ sơ":
+    case "Tài khoản":
       //
       break;
     case "Đăng xuất":
-      localStorage.removeItem("AppLocalStorage");
+      onDeleteAppLocalStorage();
       updateAuthorizationHeader(null);
-      ROUTER.push({ name: "Home" });
       onActionLogoutCart();
       onActionLogout();
       break;
@@ -104,13 +106,34 @@ watch(onGetterCategoryPopup, () => {
       class="active-category-icon pi pi-times absolute on-click"
     />
 
+    <!-- Label đăng xuất -->
+    <label
+      v-if="onHide()"
+      class="flex p-3 align-items-center gap-2 on-click p-error"
+      @click="onClickItemOption('Đăng xuất')"
+    >
+      <i class="pi pi-sign-out p-error" />
+      Đăng xuất
+    </label>
+
     <!-- Label kho hàng -->
     <label
+      v-if="accessToken"
       @click="onClickToWarehouse"
       class="category-item flex align-items-center gap-2 on-click"
     >
       <i class="pi pi-credit-card" />
       Kho hàng
+    </label>
+
+    <!-- Label đăng xuất -->
+    <label
+      v-if="onHide()"
+      class="category-item flex align-items-center gap-2 on-click"
+      @click="onClickItemOption('Tài khoản')"
+    >
+      <i class="pi pi-user" />
+      Tài khoản
     </label>
 
     <!-- Label thông báo -->
@@ -141,6 +164,7 @@ watch(onGetterCategoryPopup, () => {
       />
 
       <div
+        v-if="!onHide()"
         class="setting-option w-11rem py-2 overflow-hidden box-shadow-1 bg-white flex flex-column absolute top-100 right-0 border-round-2xl"
       >
         <span
