@@ -52,7 +52,7 @@ module.exports = (router) => {
 
   // API lấy danh sách đơn hàng
   router.get(
-    `${commonRoute}/products/orders?:user_id`,
+    `${commonRoute}/products/orders`,
     authenticateToken,
     controller.ordersCT
   );

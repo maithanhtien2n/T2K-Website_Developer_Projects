@@ -6,7 +6,7 @@ const cors = require("cors");
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "10mb" })); // Tăng giới hạn kích thước lên 10MB (tuỳ chỉnh kích thước)
 
 app.use(cors());
 

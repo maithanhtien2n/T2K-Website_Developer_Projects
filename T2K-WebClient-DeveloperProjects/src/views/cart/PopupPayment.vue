@@ -75,10 +75,10 @@ const onClickConfirmPayment = (value) => {
           <span class="line-height-2">
             {{ item?.name }}
             (
-            <span class="text-700 text-custom-mini line-through">
+            <span v-if="vip()" class="text-700 text-custom-mini line-through">
               {{ formatToVND(item?.originalPrice) }}
             </span>
-            <span> - </span>
+            <span v-if="vip()"> - </span>
             <span class="p-error"> {{ formatToVND(item?.price) }} </span> )
           </span>
         </div>
@@ -94,7 +94,7 @@ const onClickConfirmPayment = (value) => {
 
       <div class="flex justify-content-between">
         <span class="font-bold">Số lượng sản phẩm:</span>
-        <span>x {{ props?.payDetail?.amount }}</span>
+        <span>x{{ props?.payDetail?.amount }}</span>
       </div>
 
       <div class="flex justify-content-between">

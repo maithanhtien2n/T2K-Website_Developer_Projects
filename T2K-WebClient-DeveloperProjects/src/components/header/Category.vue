@@ -43,7 +43,7 @@ const onActive = () => {
   if (data.sizeScreen < 820) return data.display.transform === "translateX(0)";
 };
 
-const onHide = () => data.sizeScreen < 750 && accessToken.value;
+const onHide = () => data.sizeScreen < 750 && userInfo.value?.account_id;
 
 const onClickClosePopup = () => {
   data.display.transform = "translateX(-100%)";
@@ -59,19 +59,24 @@ const onClickToWarehouse = () => {
 };
 
 const onClickItemOption = (value) => {
-  onActionLoadingActive(true);
   switch (value) {
     case "Tài khoản":
-      //
+      onLoadingPageRepeat(
+        ROUTE.name === "Personal",
+        onActionLoadingActive,
+        ROUTER.push({ name: "Personal" })
+      );
+      if (data.sizeScreen < 820) onClickClosePopup();
       break;
     case "Đăng xuất":
+      onActionLoadingActive(true);
       onDeleteAppLocalStorage();
       updateAuthorizationHeader(null);
       onActionLogoutCart();
       onActionLogout();
+      setTimeout(() => onActionLoadingActive(false), 1000);
       break;
   }
-  setTimeout(() => onActionLoadingActive(false), 1000);
 };
 
 watch(onGetterCategoryPopup, () => {
@@ -118,7 +123,7 @@ watch(onGetterCategoryPopup, () => {
 
     <!-- Label kho hàng -->
     <label
-      v-if="accessToken"
+      v-if="userInfo?.account_id"
       @click="onClickToWarehouse"
       class="category-item flex align-items-center gap-2 on-click"
     >
@@ -145,11 +150,11 @@ watch(onGetterCategoryPopup, () => {
     <!-- Thông tin người dùng -->
     <div
       v-if="userInfo?.account_id"
-      class="info-user flex align-items-center gap-2 unselectable relative"
+      class="info-user flex align-items-center gap-2 unselectable relative on-click"
     >
       <img
-        class="w-2rem h-2rem border-circle box-shadow-1"
-        src="https://i.pinimg.com/originals/4d/86/5e/4d865ea47a8675d682ff35ad904a0af6.png"
+        class="w-2rem h-2rem border-circle box-shadow-1 object-fit-cover"
+        :src="userInfo?.user_info?.image || '../../../public/images/avatar.jpg'"
       />
       <div class="flex flex-column gap-1 text-right">
         <span class="font-bold">{{ userInfo?.user_name }}</span>

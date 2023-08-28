@@ -11,6 +11,7 @@ const {
   onActionLoadingActive,
   onActionPopupNotification,
   onActionGetUserInfo,
+  onGetterUserInfo: userInfo,
 } = StoreApp();
 
 const { onActionPaymentCart, onActionGetCarts } = STORE_CART.StoreCart();
@@ -18,10 +19,6 @@ const { onActionPaymentCart, onActionGetCarts } = STORE_CART.StoreCart();
 const data = reactive({
   display: false,
 });
-
-const onClickPayMent = () => {
-  data.display = true;
-};
 
 const onClickConfirmPayment = (value) => {
   onActionLoadingActive(true);
@@ -53,6 +50,7 @@ const onClickConfirmPayment = (value) => {
     @click="data.display = true"
     class="btn-item p-button-danger"
     label="Thanh toán ngay"
+    :disabled="!userInfo?.account_id"
   />
 
   <Dialog v-model:visible="data.display" modal class="w-30rem">
@@ -78,10 +76,10 @@ const onClickConfirmPayment = (value) => {
           <span class="line-height-2">
             {{ item?.name }}
             (
-            <span class="text-700 text-custom-mini line-through">
+            <span v-if="vip()" class="text-700 text-custom-mini line-through">
               {{ formatToVND(item?.originalPrice) }}
             </span>
-            <span> - </span>
+            <span v-if="vip()"> - </span>
             <span class="p-error"> {{ formatToVND(item?.price) }} </span> )
           </span>
         </div>
@@ -97,7 +95,7 @@ const onClickConfirmPayment = (value) => {
 
       <div class="flex justify-content-between">
         <span class="font-bold">Số lượng sản phẩm:</span>
-        <span>x {{ props?.payDetail?.amount }}</span>
+        <span>x{{ props?.payDetail?.amount }}</span>
       </div>
 
       <div class="flex justify-content-between">

@@ -29,7 +29,7 @@
 }
 
 .text-custom-1 {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
 }
 
 .text-custom-2 {
@@ -148,6 +148,11 @@
 .banner .p-carousel-indicators {
     padding-top: 0.5rem !important;
     padding-bottom: 0.2rem !important;
+}
+
+.p-tabview-nav-link {
+    padding: .8rem 1.25rem !important;
+    border-radius: 0 !important;
 }
 
 

@@ -1,6 +1,6 @@
 <script setup>
 import { reactive } from "vue";
-import { onLoadingPageRepeat } from "@/utils";
+import { onLoadingPageRepeat, formatToVND } from "@/utils";
 import { useRoute, useRouter } from "vue-router";
 import Category from "@/components/header/Category.vue";
 import { StoreApp, STORE_CART } from "@/services/stores";
@@ -72,18 +72,53 @@ const onClickToCart = () => {
         />
 
         <!-- Icon giỏ hàng -->
-        <div
-          v-if="ROUTE.name !== 'Cart'"
-          @click="onClickToCart"
-          class="relative on-click-3"
-        >
-          <i class="pi pi-shopping-cart text-2xl text-900 on-click" />
+        <div @click="onClickToCart" class="icon-cart relative">
+          <i class="pi pi-shopping-cart text-2xl text-900 on-click-3" />
           <span
             v-if="onGetterCarts?.length"
             class="count-cart bg-main-color text-white absolute font-bold flex align-items-center justify-content-center border-circle"
           >
             {{ onGetterCarts?.length }}
           </span>
+
+          <!-- Preview -->
+          <!-- <div
+            style="transform: translateX(20%)"
+            class="cart-preview w-23rem card absolute top-100 right-0 py-2 px-0 z-5"
+            @click.stop
+          >
+            <div class="flex flex-column">
+              <div class="item-cart flex gap-2 on-click p-2 px-3">
+                <img
+                  class="w-4rem h-4rem object-fit-cover"
+                  src="https://static.wikia.nocookie.net/bach-khoa-the-gioi-toan-thu/images/e/e4/Son_goku.png"
+                  alt=""
+                />
+
+                <div class="flex flex-column gap-1">
+                  <span class="w-full fixed-text">
+                    Làm thế nào để học HTML và CSS từ đầu một cách nhanh chóng?
+                  </span>
+                  <span class="p-error">{{ formatToVND(500000) }}</span>
+                </div>
+              </div>
+
+              <div class="item-cart flex gap-2 on-click p-2 px-3">
+                <img
+                  class="w-4rem h-4rem object-fit-cover"
+                  src="https://static.wikia.nocookie.net/bach-khoa-the-gioi-toan-thu/images/e/e4/Son_goku.png"
+                  alt=""
+                />
+
+                <div class="flex flex-column gap-1">
+                  <span class="w-full fixed-text">
+                    Làm thế nào để học HTML và CSS từ đầu một cách nhanh chóng?
+                  </span>
+                  <span class="p-error">{{ formatToVND(500000) }}</span>
+                </div>
+              </div>
+            </div>
+          </div> -->
         </div>
 
         <Category />
@@ -103,6 +138,22 @@ const onClickToCart = () => {
 
 .active-category-icon {
   display: none;
+}
+
+.item-cart {
+  transition: all 0.2s ease;
+}
+
+.item-cart:hover {
+  background-color: #ddd;
+}
+
+.cart-preview {
+  display: none;
+}
+
+.icon-cart:hover .cart-preview {
+  display: block !important;
 }
 
 /* Tùy chỉnh kích thước giao diện */

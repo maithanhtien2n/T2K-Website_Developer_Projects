@@ -31,10 +31,6 @@ const Products = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    sold: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: true,
@@ -107,10 +103,6 @@ const Carts = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    vip: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: true,
@@ -169,7 +161,11 @@ const CustomerOrders = sequelize.define(
 // Lấy mảng thì dùng hasMany lấy object thì dùng belongsTo (nếu mà khác field thì dùng này foreignKey - sourceKey)
 Carts.belongsTo(Products, { foreignKey: "product_id", as: "product" });
 
+Carts.belongsTo(UsersInfo, { foreignKey: "user_id", as: "user" });
+
 Products.hasMany(Ratings, { foreignKey: "product_id", as: "evaluate" });
+
+Products.hasMany(CustomerOrders, { foreignKey: "product_id", as: "sold" });
 
 Ratings.belongsTo(UsersInfo, { foreignKey: "user_id", as: "user" });
 

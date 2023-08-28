@@ -1,5 +1,11 @@
 const { Account, UsersInfo } = require("./config");
 const { throwError } = require("../../utils/index");
+const {
+  onUrlFile,
+  onImagePath,
+  onSaveFile,
+  onDeleteFile,
+} = require("../../utils/upload");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -31,8 +37,9 @@ module.exports = {
 
       await UsersInfo.create({
         account_id: account.account_id,
+        vip: 0,
         full_name,
-        phone_number,
+        phone_number: Number(phone_number),
         day_of_birth,
         gender,
         account_money: 0,
@@ -72,6 +79,49 @@ module.exports = {
     try {
       const userInfo = await UsersInfo.findOne({ where: { account_id } });
       return { account_id, user_name, user_info: userInfo };
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  updateUserInfoMD: async ({
+    user_id,
+    image,
+    full_name,
+    phone_number,
+    day_of_birth,
+    gender,
+    host,
+  }) => {
+    try {
+      const imagePath = image ? onImagePath(image.name) : undefined;
+
+      const userInfo = await UsersInfo.findOne({ where: { user_id } });
+
+      if (!userInfo) {
+        throwError(201, `Không tồn tại người dùng có id là: ${user_id}`);
+      }
+
+      if (userInfo.image && image) {
+        onDeleteFile(userInfo.image);
+      }
+
+      await UsersInfo.update(
+        {
+          image: image ? onUrlFile(host, imagePath) : undefined,
+          full_name,
+          phone_number,
+          day_of_birth,
+          gender,
+        },
+        { where: { user_id } }
+      );
+
+      if (image) {
+        onSaveFile(imagePath, image.base64);
+      }
+
+      return "Cập nhật thông tin thành công!";
     } catch (error) {
       throw error;
     }

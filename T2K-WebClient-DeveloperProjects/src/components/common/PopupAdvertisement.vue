@@ -10,6 +10,7 @@ const { onActionDisplayAdvertisement, onGetterDisplayAdvertisement: display } =
   <div
     v-if="display"
     style="z-index: 999999999999 !important"
+    @click.stop="onActionDisplayAdvertisement(false)"
     class="fixed top-0 right-0 bottom-0 left-0 bg-black-alpha-50 flex align-items-center justify-content-center"
   >
     <div class="relative p-3">
@@ -24,6 +25,7 @@ const { onActionDisplayAdvertisement, onGetterDisplayAdvertisement: display } =
       />
 
       <img
+        @click.stop
         style="object-fit: contain; max-width: 370px"
         src="https://banghieudanang.com/wp-content/uploads/2022/03/banner_home-1.png"
         alt="Lỗi ảnh"

@@ -30,16 +30,16 @@ const appLocalStorage = useStorage(
 
 const vip = () => {
   switch (appLocalStorage.value?.userData?.user_info?.vip) {
-    case "1":
+    case 1:
       return 5;
-    case "2":
+    case 2:
       return 10;
-    case "3":
+    case 3:
       return 15;
-    case "4":
+    case 4:
       return 20;
     default:
-      return appLocalStorage.value?.userData;
+      return 0;
   }
 };
 
@@ -89,9 +89,19 @@ const formatToVND = (amount) => {
   }).format(amount);
 };
 
+const isValidPhoneNumber = (phoneNumber) => {
+  const phoneRegex = /^0[0-9]{9}$/;
+  return phoneRegex.test(phoneNumber);
+};
+
+const isValidName = (name) => {
+  const nameRegex = /^[A-Za-zÀ-ỹ\s]{2,}$/;
+  return nameRegex.test(name);
+};
+
 const onLoadingPage = (action) => {
   window.scrollTo(0, 0);
-  setTimeout(() => action(false), 1000);
+  setTimeout(() => action(false), 300);
 };
 
 const onLoadingPageRepeat = (checkRouter, onLoadingActive, onNextRouter) => {
@@ -99,36 +109,36 @@ const onLoadingPageRepeat = (checkRouter, onLoadingActive, onNextRouter) => {
     onLoadingActive(true);
     window.scrollTo(0, 0);
     onNextRouter;
-    setTimeout(() => onLoadingActive(false), 1000);
+    setTimeout(() => onLoadingActive(false), 300);
   } else {
     onLoadingActive(true);
     onNextRouter;
   }
 };
 
-const onResponse = (resApi, toast) => {
-  return resApi
-    .then(({ data: res }) => {
-      if (res.success) {
-        return res;
-      } else {
-        throw res.statusValue;
-      }
-    })
-    .catch((error) => {
-      console.log(res);
-      throw error;
-    });
+const onRenderStringBase64 = (file) => {
+  const fileBase64 = {};
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = (event) => {
+    fileBase64 = {
+      fileName: file.name,
+      contentBase64: event.target.result,
+    };
+  };
+  return fileBase64;
 };
 
 export {
   appLocalStorage,
   isEmpty,
   formatDate,
+  isValidName,
   formatToVND,
   onLoadingPage,
+  isValidPhoneNumber,
   onLoadingPageRepeat,
-  onResponse,
+  onRenderStringBase64,
   onDeleteAppLocalStorage,
   userData,
   accessToken,

@@ -29,6 +29,12 @@ module.exports = {
               },
             ],
           },
+          include: [
+            {
+              model: CustomerOrders,
+              as: "sold",
+            },
+          ],
         })),
       ].map((item) => {
         return {
@@ -41,7 +47,7 @@ module.exports = {
             ? item?.price - (item?.price * item?.sale) / 100
             : undefined,
           description: item?.description,
-          sold: item?.sold,
+          sold: item?.sold.length,
           created_at: item?.created_at,
           updated_at: item?.updated_at,
         };
@@ -56,6 +62,10 @@ module.exports = {
       const item = await Products.findOne({
         where: { product_id: id },
         include: [
+          {
+            model: CustomerOrders,
+            as: "sold",
+          },
           {
             model: Ratings,
             as: "evaluate",
@@ -81,19 +91,30 @@ module.exports = {
         image: item?.image,
         name: item?.name,
         price: item?.price,
-        sale: item?.sale ? `Giảm ${item?.sale}%` : undefined,
+        sale: item?.sale ? `Sale ${item?.sale}%` : undefined,
         price_sale: item?.sale
           ? item?.price - (item?.price * item?.sale) / 100
           : undefined,
         description: item?.description,
-        sold: item?.sold,
+        sold: item?.sold.length,
         amount_evaluate: item?.evaluate.length,
-        total_evaluate:
-          item?.evaluate
-            .filter(({ start_amount }) => start_amount !== 0)
-            .reduce((start, { start_amount }) => start + start_amount, 0) /
-          item?.evaluate.filter(({ start_amount }) => start_amount !== 0)
-            .length,
+        total_evaluate: !isNaN(
+          (
+            +item?.evaluate
+              .filter(({ start_amount }) => start_amount !== 0)
+              .reduce((start, { start_amount }) => start + start_amount, 0) /
+            item?.evaluate.filter(({ start_amount }) => start_amount !== 0)
+              .length
+          ).toFixed(1)
+        )
+          ? (
+              +item?.evaluate
+                .filter(({ start_amount }) => start_amount !== 0)
+                .reduce((start, { start_amount }) => start + start_amount, 0) /
+              item?.evaluate.filter(({ start_amount }) => start_amount !== 0)
+                .length
+            ).toFixed(1)
+          : null,
         evaluate: item?.evaluate
           .map((item) => {
             return {
@@ -160,20 +181,40 @@ module.exports = {
     try {
       const carts = await Carts.findAll({
         where: { user_id },
-        attributes: ["cart_id", "vip", "created_at", "updated_at"],
+        attributes: ["cart_id", "created_at", "updated_at"],
         include: [
           {
             model: Products,
             as: "product",
           },
+          {
+            model: UsersInfo,
+            as: "user",
+          },
         ],
       });
 
       return [...carts].map((item) => {
+        // Tính kết quả nếu có sale còn không có sale thì undefined
         const price_sale = item?.product?.sale
           ? item?.product?.price -
             (item?.product?.price * item?.product?.sale) / 100
           : undefined;
+
+        const vip = (value) => {
+          switch (value) {
+            case 1:
+              return 5;
+            case 2:
+              return 10;
+            case 3:
+              return 15;
+            case 4:
+              return 20;
+            default:
+              return 0;
+          }
+        };
 
         return {
           cart_id: item?.cart_id,
@@ -186,12 +227,15 @@ module.exports = {
             ? item?.product?.price -
               (item?.product?.price * item?.product?.sale) / 100
             : undefined,
-          vip: item?.vip ? `Giảm ${item?.vip}%` : "Không vip",
-          money_number: !item?.vip
+          vip: item?.user?.vip ? `Giảm ${vip(item?.user?.vip)}%` : "Không vip",
+          money_number: !item?.user?.vip
             ? price_sale
+              ? price_sale
+              : item?.product?.price
             : price_sale
-            ? price_sale - (price_sale * item?.vip) / 100
-            : item?.product?.price - (item?.product?.price * item?.vip) / 100,
+            ? price_sale - (price_sale * vip(item?.user?.vip)) / 100
+            : item?.product?.price -
+              (item?.product?.price * vip(item?.user?.vip)) / 100,
           created_at: item?.created_at,
           updated_at: item?.updated_at,
         };
@@ -231,7 +275,7 @@ module.exports = {
         throwError(212, "Mã sản phẩm Không tồn tại!");
       }
 
-      if (await Carts.findOne({ where: { product_id } })) {
+      if (await Carts.findOne({ where: { product_id, user_id } })) {
         throwError(213, "Sản phẩm này đã có trong giỏ hàng!");
       }
 
@@ -246,9 +290,11 @@ module.exports = {
       if (!ids[0]) {
         throwError(240, "Lỗi code không kiểm tra null!");
       }
-      ids.forEach(async (id) => {
+
+      for (const id of ids) {
         await Carts.destroy({ where: { cart_id: id } });
-      });
+      }
+
       return ids;
     } catch (error) {
       throw error;
@@ -256,8 +302,9 @@ module.exports = {
   },
 
   // API đơn hàng khách hàng
-  ordersMD: async ({ user_id }) => {
+  ordersMD: async ({ user_id, key_search }) => {
     try {
+      const key = key_search ? key_search : "";
       return [
         ...(await CustomerOrders.findAll({
           where: { user_id },
@@ -265,22 +312,34 @@ module.exports = {
             {
               model: Products,
               as: "orders",
+              where: {
+                [Op.or]: [
+                  {
+                    name: {
+                      [Op.like]: `%${key}%`, // Sử dụng Op.like để thực hiện tìm kiếm gần đúng
+                    },
+                  },
+                  {
+                    description: {
+                      [Op.like]: `%${key}%`, // Sử dụng Op.like để thực hiện tìm kiếm gần đúng
+                    },
+                  },
+                ],
+              },
             },
           ],
         })),
       ]
-        .map((item) => {
-          return {
-            id_order: item?.id_order,
-            product_id: item?.orders?.product_id,
-            order_code: item?.order_code,
-            image: item?.orders?.image,
-            name: item?.orders?.name,
-            price: item?.purchase_price,
-            created_at: item?.created_at,
-            updated_at: item?.updated_at,
-          };
-        })
+        .map((item) => ({
+          id_order: item?.id_order,
+          product_id: item?.orders?.product_id,
+          order_code: item?.order_code,
+          image: item?.orders?.image,
+          name: item?.orders?.name,
+          price: item?.purchase_price,
+          created_at: item?.created_at,
+          updated_at: item?.updated_at,
+        }))
         .reverse();
     } catch (error) {
       throw error;
@@ -313,7 +372,7 @@ module.exports = {
         { where: { user_id } }
       );
 
-      products.forEach(async (item) => {
+      for (const item of products) {
         await CustomerOrders.create({
           order_code: generateRandomCode(
             `1234567890`,
@@ -326,7 +385,7 @@ module.exports = {
         });
 
         await Carts.destroy({ where: { product_id: item.product_id } });
-      });
+      }
 
       return "Đã thêm đơn hàng thành công!";
     } catch (error) {

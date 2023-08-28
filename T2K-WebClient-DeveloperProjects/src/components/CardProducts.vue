@@ -1,8 +1,8 @@
 <script setup>
-import { userData } from "@/utils";
+import { userData, vip } from "@/utils";
 import { useRoute, useRouter } from "vue-router";
 import { StoreApp, STORE_CART } from "@/services/stores";
-import { formatToVND, onLoadingPageRepeat } from "@/utils/index";
+import { formatToVND, onLoadingPageRepeat } from "@/utils";
 
 const ROUTER = useRouter();
 
@@ -21,8 +21,8 @@ const props = defineProps({
 });
 
 const onClickAddToCart = async (product_id) => {
-  const { user_id, vip } = userData?.value?.user_info;
-  const res = await onActionAddItemCart({ user_id, product_id, vip });
+  const { user_id } = userData?.value?.user_info;
+  const res = await onActionAddItemCart({ user_id, product_id });
   if (res.success) onActionGetCarts(user_id);
 };
 
@@ -49,12 +49,6 @@ const onClickViewProductDetail = (product_id) => {
           :src="item?.image"
           alt="Lỗi ảnh"
         />
-        <div
-          v-if="item?.sale"
-          class="bg-main-color absolute bottom-0 py-1 px-2 text-white"
-        >
-          {{ `Giảm ${item?.sale}` }}
-        </div>
       </div>
 
       <div class="p-2 flex flex-column gap-1">
@@ -77,6 +71,10 @@ const onClickViewProductDetail = (product_id) => {
               formatToVND(item?.price_sale ? item?.price_sale : item?.price)
             }}
           </span>
+        </div>
+
+        <div v-if="item?.sale" class="text-custom-mini text-main-color">
+          {{ `Giảm ${item?.sale}` }}
         </div>
 
         <span style="font-size: 0.8rem">Đã bán {{ item?.sold }}</span>

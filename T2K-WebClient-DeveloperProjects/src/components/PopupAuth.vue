@@ -4,8 +4,11 @@ import Register from "@/components/auth/Register.vue";
 import { reactive, watch } from "vue";
 import { StoreApp } from "@/services/stores";
 
-const { onActionLoadingActive, onGetterDisplayPopupAuth: displayPopupAuth } =
-  StoreApp();
+const {
+  onActionClosePopupLeft,
+  onActionLoadingActive,
+  onGetterDisplayPopupAuth: displayPopupAuth,
+} = StoreApp();
 
 const data = reactive({
   title: "Đăng nhập",
@@ -39,12 +42,20 @@ const onClosePopupAuth = () => {
 };
 
 const onClickOpenPopupAuth = () => {
+  onActionClosePopupLeft();
   data.display = true;
 };
 
 watch(displayPopupAuth, () => {
   data.display = true;
 });
+
+watch(
+  () => data.display,
+  (value) => {
+    if (!value) data.title = "Đăng nhập";
+  }
+);
 </script>
 
 <template>
@@ -67,7 +78,11 @@ watch(displayPopupAuth, () => {
         @onEmitClosePopupAuth="onClosePopupAuth"
       />
 
-      <Register v-else @onEmitLogin="onClickOpenPopupLogin" />
+      <Register
+        v-else
+        @onEmitLogin="onClickOpenPopupLogin"
+        @onEmitClosePopupAuth="onClosePopupAuth"
+      />
     </div>
   </Dialog>
 </template>

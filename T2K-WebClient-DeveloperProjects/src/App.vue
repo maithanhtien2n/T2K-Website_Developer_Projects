@@ -24,7 +24,7 @@ onMounted(() => {
   <!-- Popup -->
   <PopupAdvertisement />
 
-  <Toast class="toast w-20rem line-height-2" position="top-left" />
+  <Toast class="toast w-21rem line-height-2" position="top-left" />
 
   <PopupNotification />
   <!-- ----------------- -->

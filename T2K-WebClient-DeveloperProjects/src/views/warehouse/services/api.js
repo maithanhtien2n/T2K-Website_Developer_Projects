@@ -4,7 +4,11 @@ class ApiWarehouses {
   onApiGetWarehouses = async (params) => {
     return await AxiosInstance({
       method: "GET",
-      url: `products/orders?user_id=${params}`,
+      url: `products/orders`,
+      params: {
+        user_id: params?.user_id || null,
+        key_search: params?.key_search || "",
+      },
     });
   };
 }

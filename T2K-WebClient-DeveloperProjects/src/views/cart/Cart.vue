@@ -1,12 +1,17 @@
 <script setup>
 import { reactive } from "vue";
-import { userData } from "@/utils";
+import { userData, onLoadingPageRepeat } from "@/utils";
 import PopupPayment from "./PopupPayment.vue";
 import { onLoadingPage, formatToVND } from "@/utils";
 import { StoreApp, STORE_CART } from "@/services/stores";
 import { useConfirm } from "primevue/useconfirm";
+import { useRoute, useRouter } from "vue-router";
 
 const confirm = useConfirm();
+
+const ROUTER = useRouter();
+
+const ROUTE = useRoute();
 
 const { onActionLoadingActive } = StoreApp();
 
@@ -37,6 +42,14 @@ const totalMoney = () => {
   return data.selectCarts.reduce((price, { money_number }) => {
     return price + money_number;
   }, 0);
+};
+
+const onClickViewProductDetail = (product_id) => {
+  onLoadingPageRepeat(
+    ROUTE.name === "Cart",
+    onActionLoadingActive,
+    ROUTER.push({ name: "ProductDetail", params: { id: product_id } })
+  );
 };
 
 const onClickRemoveCart = (key, ids) => {
@@ -191,7 +204,7 @@ onLoadingPage(onActionLoadingActive);
           <!-- Sản phẩm -->
           <div
             v-if="!onGetterCarts[0]"
-            style="min-height: 15rem"
+            style="min-height: 20rem"
             class="card flex align-items-center justify-content-center"
           >
             Giỏ hàng của bạn trống.
@@ -215,24 +228,29 @@ onLoadingPage(onActionLoadingActive);
                 :src="item?.image"
                 alt="Lỗi ảnh"
               />
-              <div class="flex flex-column gap-2">
-                <span class="w-full font-bold line-height-2 fixed-text">
-                  {{ item?.name }}</span
-                >
-                <Rating v-model="item.rating" readonly :cancel="false">
-                  <template #onicon>
-                    <i
-                      style="font-size: 0.8rem"
-                      class="pi pi-star-fill text-main-color"
-                    />
-                  </template>
-                  <template #officon>
-                    <i
-                      style="font-size: 0.8rem"
-                      class="pi pi-star text-main-color"
-                    />
-                  </template>
-                </Rating>
+              <div class="h-full">
+                <div class="flex flex-column gap-2">
+                  <span
+                    class="w-full font-bold line-height-2 fixed-text on-click-1"
+                    @click="onClickViewProductDetail(item?.product_id)"
+                  >
+                    {{ item?.name }}</span
+                  >
+                  <Rating v-model="item.rating" readonly :cancel="false">
+                    <template #onicon>
+                      <i
+                        style="font-size: 0.8rem"
+                        class="pi pi-star-fill text-main-color"
+                      />
+                    </template>
+                    <template #officon>
+                      <i
+                        style="font-size: 0.8rem"
+                        class="pi pi-star text-main-color"
+                      />
+                    </template>
+                  </Rating>
+                </div>
               </div>
             </div>
 
@@ -261,9 +279,10 @@ onLoadingPage(onActionLoadingActive);
                 <span v-show="onHide()">VIP:</span>
                 <span
                   :class="{
-                    'bg-main-color text-white': item.vip !== 'Không vip',
+                    'bg-main-color text-white px-2 py-1':
+                      item.vip !== 'Không vip',
                   }"
-                  class="p-1 px-2 text-custom-mini border-round-2xl"
+                  class="text-custom-mini border-round-2xl"
                   >{{ item.vip }}</span
                 >
               </div>
@@ -367,6 +386,7 @@ onLoadingPage(onActionLoadingActive);
     padding: 0.2rem 0 !important;
     display: flex;
     justify-content: space-between;
+    align-items: center;
   }
 
   .pay {

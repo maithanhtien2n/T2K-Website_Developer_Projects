@@ -36,4 +36,28 @@ module.exports = {
       data: { account_id: req.data.account_id, user_name: req.data.user_name },
     });
   },
+
+  updateUserInfoCT: async (req, res) => {
+    const { user_id, image, full_name, phone_number, day_of_birth, gender } =
+      req.body;
+    await onResponse(req, res, model.updateUserInfoMD, {
+      checkData: [
+        "user_id",
+        "full_name",
+        "phone_number",
+        "day_of_birth",
+        "gender",
+      ],
+      data: {
+        user_id,
+        image,
+        full_name,
+        phone_number,
+        day_of_birth,
+        gender,
+        host: req.headers.host,
+      },
+      message: "Cập nhật dữ liệu thành công!",
+    });
+  },
 };

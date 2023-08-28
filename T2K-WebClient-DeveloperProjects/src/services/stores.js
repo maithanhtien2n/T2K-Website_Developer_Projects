@@ -7,6 +7,7 @@ export * as STORE_HOME from "@/views/home/services/store";
 export * as STORE_CART from "@/views/cart/services/store";
 export * as STORE_WAREHOUSE from "@/views/warehouse/services/store";
 export * as STORE_PRODUCT from "@/views/products/services/store";
+export * as STORE_PERSONAL from "@/views/personal/services/store";
 
 export const StoreApp = defineStore("StoreApp", () => {
   const { onResponse } = Utils();
@@ -76,6 +77,15 @@ export const StoreApp = defineStore("StoreApp", () => {
     return (userInfo.value = null);
   };
 
+  const onActionClosePopupLeft = () => {
+    categoryPopup.value = !categoryPopup.value;
+  };
+
+  const onActionRegisterAccount = async (args) => {
+    categoryPopup.value = !categoryPopup.value;
+    return await onResponse(API_APP.onApiRegisterAccount(args));
+  };
+
   // Lấy thông tin người dùng
   const onActionGetUserInfo = async () => {
     const result = await onResponse(API_APP.onApiGetUserInfo());
@@ -97,9 +107,11 @@ export const StoreApp = defineStore("StoreApp", () => {
     onActionPopupNotification,
     onActionOpenPopupAuth,
     onActionDisplayAdvertisement,
+    onActionClosePopupLeft,
 
     onActionGetUserInfo,
     onActionLogin,
     onActionLogout,
+    onActionRegisterAccount,
   };
 });

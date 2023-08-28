@@ -33,30 +33,6 @@ const onClickAddToCart = async (product_id) => {
   if (res.success) onActionGetCarts(user_id);
 };
 
-const onClickPayNow = (value) => {
-  onActionLoadingActive(true);
-  onActionPaymentCart(value)
-    .then(async (res) => {
-      if (res.success) {
-        data.display = false;
-        await onActionGetUserInfo();
-        await onActionGetCarts(props?.payDetail?.user_id);
-        ROUTER.push({ name: "Home" });
-        onActionPopupNotification({
-          display: true,
-          title: "Thanh toán thành công",
-          content1:
-            "Bạn đã thanh toán thành công đơn hàng của mình, vui lòng kiểm tra kho hàng để trải nghiệm sản phẩm.",
-          content2: "Tiếp tục mua hàng",
-          action: "Products",
-        });
-      }
-    })
-    .catch((error) => {
-      onActionLoadingActive(false);
-    });
-};
-
 onMounted(() => {
   onActionGetProductDetail(ROUTE.params.id);
 });
@@ -113,14 +89,18 @@ onLoadingPage(onActionLoadingActive);
 
         <!-- Right -->
         <div class="col-right col-7 p-3 flex flex-column gap-3">
-          <span class="title font-bold text-2xl text-main-color">
+          <span class="title text-2xl text-main-color line-height-2">
             {{ productDetail?.name }}
           </span>
 
           <div class="flex gap-3 text-700">
             <span class="flex gap-1">
               <i class="pi pi-star-fill text-main-color" />
-              {{ productDetail?.total_evaluate }}
+              {{
+                `${productDetail?.total_evaluate}`.split(".")[1] === "0"
+                  ? productDetail?.total_evaluate.split(".")[0]
+                  : productDetail?.total_evaluate
+              }}
             </span>
             <span>|</span>
             <span>{{ productDetail?.amount_evaluate }} đánh giá</span>

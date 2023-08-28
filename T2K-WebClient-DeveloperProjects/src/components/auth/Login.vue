@@ -6,7 +6,7 @@ import { appLocalStorage } from "@/utils";
 import { StoreApp, STORE_CART } from "@/services/stores";
 import { updateAuthorizationHeader } from "@/services/api";
 
-const emits = defineEmits(["onEmitClosePopupAuth"]);
+const emits = defineEmits(["onEmitClosePopupAuth", "onEmitCreateNewAccount"]);
 
 const { onActionLoadingActive, onActionLogin, onActionGetUserInfo } =
   StoreApp();
@@ -36,26 +36,31 @@ const onCheckValidate = () => {
   });
 };
 
-const onClickButtonLogin = async (value) => {
+const onClickButtonLogin = (value) => {
   onActionLoadingActive(true);
-  const res = await onActionLogin(value);
-  if (res?.success) {
-    updateAuthorizationHeader(res?.data?.token);
-    onActionGetUserInfo().then((userInfo) => {
-      // localStorage.setItem(
-      //   "AppLocalStorage",
-      //   JSON.stringify({
-      //     userData: userInfo,
-      //     accessToken: res?.data?.token,
-      //   })
-      // );
-      appLocalStorage.value.userData = userInfo;
-      appLocalStorage.value.accessToken = res?.data?.token;
-      onActionGetCarts(userInfo?.user_info?.user_id);
+  onActionLogin(value)
+    .then((res) => {
+      if (res?.success) {
+        updateAuthorizationHeader(res?.data?.token);
+        onActionGetUserInfo().then((userInfo) => {
+          // localStorage.setItem(
+          //   "AppLocalStorage",
+          //   JSON.stringify({
+          //     userData: userInfo,
+          //     accessToken: res?.data?.token,
+          //   })
+          // );
+          appLocalStorage.value.userData = userInfo;
+          appLocalStorage.value.accessToken = res?.data?.token;
+          onActionGetCarts(userInfo?.user_info?.user_id);
+        });
+        emits("onEmitClosePopupAuth");
+        setTimeout(() => onActionLoadingActive(false), 1000);
+      }
+    })
+    .catch((error) => {
+      onActionLoadingActive(false);
     });
-    emits("onEmitClosePopupAuth");
-    setTimeout(() => onActionLoadingActive(false), 1000);
-  }
 };
 </script>
 
@@ -105,7 +110,7 @@ const onClickButtonLogin = async (value) => {
       <Button label="Đăng nhập" type="submit" />
 
       <div class="flex justify-content-between">
-        <span @click="$emit('onEmitCreateNewAccount')" class="on-click"
+        <span @click="emits('onEmitCreateNewAccount')" class="on-click"
           >Tạo tài khoản mới</span
         >
         <span class="on-click">Quên mật khẩu?</span>

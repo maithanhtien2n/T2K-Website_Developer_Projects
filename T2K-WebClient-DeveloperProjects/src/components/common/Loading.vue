@@ -10,7 +10,7 @@ const { onGetterLoadingActive } = StoreApp();
     <div class="loading-overlay"></div>
     <div class="loading-content flex flex-column gap-3">
       <ProgressSpinner />
-      <span>Vui lòng đợi...</span>
+      <span>Đang tải...</span>
     </div>
   </div>
 

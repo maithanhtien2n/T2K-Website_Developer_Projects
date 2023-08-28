@@ -7,6 +7,7 @@ import RoutesHome from "@/views/home/services/routes";
 import RoutesProducts from "@/views/products/services/routes";
 import RoutesCart from "@/views/cart/services/routes";
 import RoutesWarehouse from "@/views/warehouse/services/routes";
+import RoutesPersonal from "@/views/personal/services/routes";
 
 const routes = [
   {
@@ -18,6 +19,7 @@ const routes = [
       ...RoutesProducts,
       ...RoutesCart,
       ...RoutesWarehouse,
+      ...RoutesPersonal,
     ],
   },
   {

@@ -1,6 +1,6 @@
 <script setup>
 import Banner from "./components/Banner.vue";
-import FeaturedProductsVue from "./components/FeaturedProducts.vue";
+// import FeaturedProductsVue from "./components/FeaturedProducts.vue";
 import NewProducts from "./components/NewProducts.vue";
 import { StoreApp, STORE_PRODUCT } from "@/services/stores";
 import { onLoadingPage } from "@/utils";
@@ -28,7 +28,7 @@ onLoadingPage(onActionLoadingActive);
       <NewProducts :products="products" />
 
       <!-- Sản phẩm nổi bật -->
-      <FeaturedProductsVue />
+      <!-- <FeaturedProductsVue /> -->
     </div>
   </div>
 </template>

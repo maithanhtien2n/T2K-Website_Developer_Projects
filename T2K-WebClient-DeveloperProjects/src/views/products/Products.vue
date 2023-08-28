@@ -64,7 +64,7 @@ onLoadingPage(onActionLoadingActive);
         optionLabel="name"
         optionValue="code"
         placeholder="Bộ lọc sản phẩm"
-        class="w-full mb-2"
+        class="w-full mb-2 mt-3"
       />
 
       <CardProducts :value="products" />

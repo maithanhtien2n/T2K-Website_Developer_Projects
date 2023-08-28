@@ -5,6 +5,7 @@ export * as API_HOME from "@/views/home/services/api";
 export * as API_CART from "@/views/cart/services/api";
 export * as API_PRODUCT from "@/views/products/services/api";
 export * as API_WAREHOUSE from "@/views/warehouse/services/api";
+export * as API_PERSONAL from "@/views/personal/services/api";
 
 class ApiApp {
   // headers: {
@@ -22,6 +23,21 @@ class ApiApp {
     });
   };
 
+  onApiRegisterAccount = async (args) => {
+    return await AxiosInstance({
+      method: "POST",
+      url: "account/register",
+      data: {
+        full_name: args?.fullName || "",
+        phone_number: args?.phoneNumber || null,
+        day_of_birth: args?.dateOfBirth || "",
+        gender: args?.gender,
+        user_name: args?.userName,
+        password: args?.password,
+      },
+    });
+  };
+
   onApiGetUserInfo = async (args) => {
     return await AxiosInstance({
       method: "GET",
@@ -33,11 +49,11 @@ class ApiApp {
 export const API_APP = new ApiApp();
 
 const AxiosInstance = axios.create({
-  // baseURL: "http://localhost:3000/api/v1/",
+  baseURL: "http://localhost:3000/api/v1/",
 
   // baseURL: "http://192.168.1.4:3000/api/v1/",
 
-  baseURL: "http://192.168.88.21:3000/api/v1/",
+  // baseURL: "http://192.168.88.21:3000/api/v1/",
 });
 
 const updateAuthorizationHeader = (token) => {

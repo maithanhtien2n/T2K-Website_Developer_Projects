@@ -1,8 +1,13 @@
 <script setup>
 import { onLoadingPage, userData } from "@/utils";
 import { StoreApp, STORE_WAREHOUSE } from "@/services/stores";
-import { formatToVND, formatDate } from "@/utils";
+import { formatToVND, formatDate, onLoadingPageRepeat } from "@/utils";
 import { onMounted, reactive, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
+
+const ROUTE = useRoute();
+
+const ROUTER = useRouter();
 
 const { onActionLoadingActive } = StoreApp();
 
@@ -16,8 +21,26 @@ const data = reactive({
 
 const onHide = () => data.sizeScreen < 750;
 
+const onClickSearchProductOrder = async () => {
+  onActionLoadingActive(true);
+  const res = await onActionGetWarehouses({
+    user_id: userData.value?.user_info?.user_id,
+    key_search: data.keySearch,
+  });
+
+  if (res.success) setTimeout(() => onActionLoadingActive(false), 300);
+};
+
+const onClickViewProductDetail = (product_id) => {
+  onLoadingPageRepeat(
+    ROUTE.name === "Cart",
+    onActionLoadingActive,
+    ROUTER.push({ name: "ProductDetail", params: { id: product_id } })
+  );
+};
+
 onMounted(() => {
-  onActionGetWarehouses(userData.value?.user_info?.user_id);
+  onActionGetWarehouses({ user_id: userData.value?.user_info?.user_id });
 });
 
 onLoadingPage(onActionLoadingActive);
@@ -29,11 +52,15 @@ onLoadingPage(onActionLoadingActive);
       <label class="text-custom-1 font-bold">Kho hàng</label>
 
       <span class="search p-input-icon-right w-30rem">
-        <i class="pi pi-search" />
+        <i
+          @click="onClickSearchProductOrder"
+          class="pi pi-search on-click font-bold"
+        />
         <InputText
           v-model="data.keySearch"
           class="search w-30rem"
           placeholder="Tìm theo tên sản phẩm"
+          @keypress.enter="onClickSearchProductOrder"
         />
       </span>
 
@@ -58,7 +85,7 @@ onLoadingPage(onActionLoadingActive);
           <!-- Sản phẩm -->
           <div
             v-if="!warehouses[0]"
-            style="min-height: 15rem"
+            style="min-height: 20rem"
             class="card flex align-items-center justify-content-center"
           >
             Kho hàng của bạn trống.
@@ -76,7 +103,10 @@ onLoadingPage(onActionLoadingActive);
                 alt="Lỗi ảnh"
               />
               <div class="flex flex-column gap-1">
-                <span class="w-full line-height-2 fixed-text">
+                <span
+                  class="w-full line-height-2 fixed-text on-click-1"
+                  @click="onClickViewProductDetail(item?.product_id)"
+                >
                   {{ item?.name }}
                 </span>
                 <span class="p-error">{{ formatToVND(item?.price) }}</span>

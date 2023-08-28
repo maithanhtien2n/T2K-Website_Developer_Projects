@@ -2,6 +2,15 @@
 import * as Yup from "yup";
 import { Form, Field } from "vee-validate";
 import { reactive, ref } from "vue";
+import { StoreApp } from "@/services/stores";
+
+const {
+  onActionRegisterAccount,
+  onActionPopupNotification,
+  onActionLoadingActive,
+} = StoreApp();
+
+const emits = defineEmits(["onEmitClosePopupAuth"]);
 
 const formRegister = ref(null);
 
@@ -46,7 +55,25 @@ const onCheckValidate = () => {
 };
 
 const onClickButtonRegister = (value) => {
-  console.log(value);
+  onActionLoadingActive(true);
+
+  onActionRegisterAccount(value)
+    .then((res) => {
+      if (res.success) {
+        onActionPopupNotification({
+          display: true,
+          title: "Đăng ký tài khoản thành công",
+          content1:
+            "Xin chúc mừng bạn đã đăng ký thành công tài khoản, hãy đăng nhập để trải nghiệm những chức năng thú vị.",
+        });
+
+        emits("onEmitClosePopupAuth");
+        setTimeout(() => onActionLoadingActive(false), 1000);
+      }
+    })
+    .catch((error) => {
+      onActionLoadingActive(false);
+    });
 };
 </script>
 

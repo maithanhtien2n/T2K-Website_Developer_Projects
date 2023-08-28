@@ -1,5 +1,5 @@
-import { ToastService } from "@/utils/toast";
 import { isEmpty } from "@/utils";
+import { ToastService } from "@/utils/toast";
 
 export const Utils = () => {
   const TOAST = ToastService();

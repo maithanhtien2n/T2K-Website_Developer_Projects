@@ -61,7 +61,7 @@ module.exports = {
   // API đơn hàng khách hàng
   ordersCT: async (req, res) => {
     await onResponse(req, res, model.ordersMD, {
-      data: ({ user_id } = req.query),
+      data: ({ user_id, key_search } = req.query),
     });
   },
 

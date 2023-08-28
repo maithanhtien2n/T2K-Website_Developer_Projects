@@ -3,20 +3,18 @@ import { reactive } from "vue";
 
 const banners = reactive([
   {
-    image:
-      "https://vtcc.vn/wp-content/uploads/2023/04/Corporate-and-Digital-Business-Marketing-Promotion-Horizontal-Web-Banner-Design-PSD-scaled.jpg",
+    image: "https://wallpaperaccess.com/full/751974.jpg",
+  },
+  {
+    image: "https://wallpaperaccess.com/full/3833829.png",
   },
   {
     image:
-      "https://d3pyarv4eotqu4.cloudfront.net/wdcprinto/images/product/Banner_Printing37.png",
+      "https://c4.wallpaperflare.com/wallpaper/729/985/143/anime-rwby-ruby-rose-character-wallpaper-preview.jpg",
   },
   {
     image:
-      "https://haycafe.vn/wp-content/uploads/2022/03/Background-banner-1.jpg",
-  },
-  {
-    image:
-      "https://i.pinimg.com/originals/4d/86/5e/4d865ea47a8675d682ff35ad904a0af6.png",
+      "https://i.pinimg.com/originals/a4/1a/c7/a41ac762418248406597fa217f217aa4.jpg",
   },
 ]);
 </script>

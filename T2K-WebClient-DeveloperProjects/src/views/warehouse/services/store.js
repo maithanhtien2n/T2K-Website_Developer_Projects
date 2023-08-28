@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { computed, reactive } from "vue";
+import { computed, ref } from "vue";
 import { Utils } from "@/utils/response";
 import { API_WAREHOUSE } from "@/services/api";
 
@@ -11,7 +11,7 @@ export const StoreWarehouse = defineStore("StoreWarehouse", () => {
   const API = API_WAREHOUSE.API_WAREHOUSE;
 
   // State
-  const warehouses = reactive([]);
+  const warehouses = ref([]);
 
   // Getter
   const onGetterWarehouses = computed(() => warehouses);
@@ -19,7 +19,8 @@ export const StoreWarehouse = defineStore("StoreWarehouse", () => {
   // Action
   const onActionGetWarehouses = async (params) => {
     const result = await onResponse(API.onApiGetWarehouses(params));
-    return Object.assign(warehouses, [...result.data]);
+    warehouses.value = result.data;
+    return result;
   };
 
   return {
