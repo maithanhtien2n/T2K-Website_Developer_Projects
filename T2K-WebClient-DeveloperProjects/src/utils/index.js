@@ -48,6 +48,8 @@ const userData = computed(() => appLocalStorage.value?.userData);
 const accessToken = computed(() => appLocalStorage.value?.accessToken);
 
 const onDeleteAppLocalStorage = () => {
+  localStorage.removeItem("AppLocalStorage");
+
   appLocalStorage.value = {};
 
   router.replace({
@@ -63,6 +65,14 @@ const isEmpty = (value) => {
     (Array.isArray(value) && !value.length) ||
     (!!value && value.constructor === Object && Object.keys(value).length === 0)
   );
+};
+
+const stringWithoutAccents = (value) => {
+  if (!value) return value;
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[đĐ]/g, "d");
 };
 
 const formatDate = (dateString, showTime = false) => {
@@ -117,7 +127,7 @@ const onLoadingPageRepeat = (checkRouter, onLoadingActive, onNextRouter) => {
 };
 
 const onRenderStringBase64 = (file) => {
-  const fileBase64 = {};
+  let fileBase64 = {};
   const reader = new FileReader();
   reader.readAsDataURL(file);
   reader.onload = (event) => {
@@ -138,6 +148,7 @@ export {
   onLoadingPage,
   isValidPhoneNumber,
   onLoadingPageRepeat,
+  stringWithoutAccents,
   onRenderStringBase64,
   onDeleteAppLocalStorage,
   userData,

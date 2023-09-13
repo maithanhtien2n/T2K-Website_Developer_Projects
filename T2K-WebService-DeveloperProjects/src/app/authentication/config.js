@@ -22,6 +22,22 @@ const Account = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    type_account: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    status: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     tableName: "accounts",
@@ -85,7 +101,46 @@ const UsersInfo = sequelize.define(
   }
 );
 
+const Notification = sequelize.define(
+  "Notification",
+  {
+    notification_id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
+    account_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    content: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    new_notification: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+  },
+  {
+    tableName: "notification",
+    timestamps: false,
+  }
+);
+
+Account.hasMany(UsersInfo, { foreignKey: "account_id", as: "user_detail" });
+
 module.exports = {
   Account,
   UsersInfo,
+  Notification,
 };

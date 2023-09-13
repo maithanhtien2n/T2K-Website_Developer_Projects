@@ -41,9 +41,10 @@ const {
           class="text-center text-main-color line-height-2 on-click"
           @click="
             () => {
-              ROUTER.push({ name: popupInfo?.action });
-              onActionLoadingActive(true);
-              onActionPopupNotification({ display: false });
+              if (popupInfo?.action) {
+                ROUTER.push({ name: popupInfo?.action });
+                onActionPopupNotification({ display: false });
+              }
             }
           "
         >

@@ -80,7 +80,7 @@ module.exports = {
               {
                 model: UsersInfo,
                 as: "user",
-                attributes: ["image", "full_name"],
+                attributes: ["user_id", "image", "full_name"],
               },
             ],
           },
@@ -101,35 +101,57 @@ module.exports = {
         total_evaluate: !isNaN(
           (
             +item?.evaluate
-              .filter(({ start_amount }) => start_amount !== 0)
+              .filter(
+                ({ start_amount }) => start_amount !== 0 && start_amount !== -1
+              )
               .reduce((start, { start_amount }) => start + start_amount, 0) /
-            item?.evaluate.filter(({ start_amount }) => start_amount !== 0)
-              .length
+            item?.evaluate.filter(
+              ({ start_amount }) => start_amount !== 0 && start_amount !== -1
+            ).length
           ).toFixed(1)
         )
           ? (
               +item?.evaluate
-                .filter(({ start_amount }) => start_amount !== 0)
+                .filter(
+                  ({ start_amount }) =>
+                    start_amount !== 0 && start_amount !== -1
+                )
                 .reduce((start, { start_amount }) => start + start_amount, 0) /
-              item?.evaluate.filter(({ start_amount }) => start_amount !== 0)
-                .length
+              item?.evaluate.filter(
+                ({ start_amount }) => start_amount !== 0 && start_amount !== -1
+              ).length
             ).toFixed(1)
           : null,
         evaluate: item?.evaluate
           .map((item) => {
             return {
+              user_id: item?.user?.user_id,
               rating_id: item?.rating_id,
               image: item?.user?.image,
               full_name: item?.user?.full_name,
-              start_amount: item?.start_amount
-                ? item?.start_amount
-                : "Chưa trải nghiệm sản phẩm",
+              start_key: item?.start_amount,
+              start_amount:
+                item?.start_amount === 0 || item?.start_amount === -1
+                  ? item?.start_amount === 0
+                    ? "Chưa trải nghiệm sản phẩm"
+                    : "Từng trải nghiệm sản phẩm"
+                  : item?.start_amount,
               content: item?.content,
               created_at: item?.created_at,
               updated_at: item?.updated_at,
             };
           })
-          .reverse(),
+          .reverse()
+          .sort((a, b) => {
+            if (a.start_key === 0 || a.start_key === -1) {
+              return 1;
+            }
+            if (b.start_key === 0 || b.start_key === -1) {
+              return -1;
+            }
+
+            return 0;
+          }),
         created_at: item?.created_at,
         updated_at: item?.updated_at,
       };

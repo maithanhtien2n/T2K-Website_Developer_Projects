@@ -8,10 +8,12 @@ import { updateAuthorizationHeader } from "@/services/api";
 
 const emits = defineEmits(["onEmitClosePopupAuth", "onEmitCreateNewAccount"]);
 
-const { onActionLoadingActive, onActionLogin, onActionGetUserInfo } =
-  StoreApp();
-
-const { onActionGetCarts } = STORE_CART.StoreCart();
+const {
+  onActionLoadingActive,
+  onActionLogin,
+  onActionGetUserInfo,
+  onActionPopupNotification,
+} = StoreApp();
 
 const formLogin = ref(null);
 
@@ -20,6 +22,7 @@ const data = reactive({
     userName: "",
     password: "",
   },
+  display: true,
 });
 
 const onInputUpdatePassword = (event) => {
@@ -38,28 +41,33 @@ const onCheckValidate = () => {
 
 const onClickButtonLogin = (value) => {
   onActionLoadingActive(true);
-  onActionLogin(value)
+  onActionLogin(value, "USER_ACCOUNT")
     .then((res) => {
       if (res?.success) {
         updateAuthorizationHeader(res?.data?.token);
         onActionGetUserInfo().then((userInfo) => {
-          // localStorage.setItem(
-          //   "AppLocalStorage",
-          //   JSON.stringify({
-          //     userData: userInfo,
-          //     accessToken: res?.data?.token,
-          //   })
-          // );
           appLocalStorage.value.userData = userInfo;
           appLocalStorage.value.accessToken = res?.data?.token;
-          onActionGetCarts(userInfo?.user_info?.user_id);
         });
         emits("onEmitClosePopupAuth");
-        setTimeout(() => onActionLoadingActive(false), 1000);
+        setTimeout(() => onActionLoadingActive(false), 300);
       }
     })
     .catch((error) => {
       onActionLoadingActive(false);
+
+      if (`${error}`.split(":")[1].trim() === "Tài khoản của bạn đã bị khóa!") {
+        emits("onEmitClosePopupAuth");
+        onActionPopupNotification({
+          display: true,
+          title: "Tài khoản của bạn đã bị khóa",
+          icon: "error",
+          content1:
+            "Tài khoản của bạn đã bị khóa, vui lòng liên hệ với chúng tôi để mở khóa cho tài khoản của bạn.",
+          content2: "Tìm hiểu thêm",
+          action: "LoginAdmin",
+        });
+      }
     });
 };
 </script>

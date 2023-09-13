@@ -54,9 +54,9 @@ const onClickConfirmPayment = (value) => {
 
   <Dialog v-model:visible="data.display" modal class="w-30rem">
     <template #header>
-      <span class="font-bold text-2xl text-main-color"
-        >Xác nhận thanh toán</span
-      >
+      <span class="font-bold text-2xl text-main-color">
+        Xác nhận thanh toán
+      </span>
     </template>
 
     <div class="w-full flex flex-column gap-3">

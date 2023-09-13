@@ -69,7 +69,7 @@ watch(
     v-model:visible="data.display"
     modal
     :header="data.title"
-    class="w-30rem"
+    class="w-25rem"
   >
     <div class="mt-1">
       <Login

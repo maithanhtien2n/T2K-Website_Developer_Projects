@@ -19,7 +19,7 @@ const data = reactive({
 const onChangeTitle = () => {
   return ROUTE.query.search
     ? `Kết quả tìm kiếm cho: " ${data.keyWord} "`
-    : "Tất cả sản phẩm";
+    : "Danh sách sản phẩm";
 };
 
 watch(
@@ -57,18 +57,20 @@ onLoadingPage(onActionLoadingActive);
 
 <template>
   <div class="container body">
-    <CardBody class="mt-3" :label="onChangeTitle()">
+    <div class="flex flex-column gap-3 pt-3">
+      <span class="text-custom-1 font-bold">{{ onChangeTitle() }}</span>
+
       <Dropdown
         v-model="data.filter"
         :options="filterOptions"
         optionLabel="name"
         optionValue="code"
         placeholder="Bộ lọc sản phẩm"
-        class="w-full mb-2 mt-3"
+        class="w-full"
       />
 
       <CardProducts :value="products" />
-    </CardBody>
+    </div>
 
     <div
       v-if="ROUTE.query.search && products?.length > 0"

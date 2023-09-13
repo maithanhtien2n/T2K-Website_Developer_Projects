@@ -23,7 +23,6 @@ const onClickRemovePopup = () => {
   <div
     v-if="props.display"
     @click="onClickRemovePopup"
-    :class="{ 'opacity-0': props?.opacity }"
     class="bg-black-alpha-60 fixed top-0 left-0 right-0 bottom-0"
   />
 </template>

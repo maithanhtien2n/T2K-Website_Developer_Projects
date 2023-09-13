@@ -1,6 +1,8 @@
 <script setup>
 import { StoreApp } from "@/services/stores";
 
+window.scrollTo(0, 0);
+
 const { onGetterLoadingActive } = StoreApp();
 </script>
 

@@ -10,17 +10,6 @@ class ApiHome {
       },
     });
   };
-
-  onApiGetNewNotifications = async (args) => {
-    return await AxiosInstance({
-      method: "GET",
-      url: "accounts/notification",
-      params: {
-        account_id: args?.account_id || null,
-        new_notification: args?.new_notification || null,
-      },
-    });
-  };
 }
 
 export const API_HOME = new ApiHome();

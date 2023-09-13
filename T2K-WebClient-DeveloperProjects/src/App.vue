@@ -1,22 +1,39 @@
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, watch } from "vue";
 import { accessToken } from "@/utils";
 import TheHeader from "@/components/TheHeader.vue";
 import TheFooter from "./components/TheFooter.vue";
 import Loading from "@/components/common/Loading.vue";
-import { StoreApp, STORE_CART } from "@/services/stores";
+import { StoreApp, STORE_CART, STORE_HOME } from "@/services/stores";
 import PopupAdvertisement from "@/components/common/PopupAdvertisement.vue";
 
 const { onActionGetUserInfo } = StoreApp();
 
 const { onActionGetCarts } = STORE_CART.StoreCart();
 
-onMounted(() => {
+const { onActionGetNewNotifications } = STORE_HOME.StoreHome();
+
+const onUpdateData = () => {
   window.scrollTo(0, 0);
   if (accessToken.value)
     onActionGetUserInfo().then((userInfo) => {
       onActionGetCarts(userInfo?.user_info?.user_id);
+      onActionGetNewNotifications({
+        account_id: userInfo.account_id,
+        new_notification: "NEW",
+      });
     });
+};
+
+watch(
+  () => accessToken.value,
+  () => {
+    onUpdateData();
+  }
+);
+
+onMounted(() => {
+  onUpdateData();
 });
 </script>
 
@@ -29,10 +46,12 @@ onMounted(() => {
   <PopupNotification />
   <!-- ----------------- -->
 
-  <div class="flex flex-column gap-3">
+  <div class="h-screen flex flex-column gap-3">
     <TheHeader />
 
-    <router-view />
+    <div class="flex-1">
+      <router-view />
+    </div>
 
     <TheFooter />
   </div>

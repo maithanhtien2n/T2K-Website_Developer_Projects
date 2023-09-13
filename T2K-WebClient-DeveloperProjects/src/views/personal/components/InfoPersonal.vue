@@ -110,9 +110,9 @@ const onUpdateData = (value) => {
         user_id: item?.user_id,
         avatar: {
           name: item?.image
-            .split("_")
-            .filter((_, index) => index !== 0)
-            .join("_"),
+            ?.split("_")
+            ?.filter((_, index) => index !== 0)
+            ?.join("_"),
           base64: item?.image,
         },
         fullName: item?.full_name,

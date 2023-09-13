@@ -12,21 +12,40 @@ export const StorePersonal = defineStore("StorePersonal", () => {
 
   // State
   const personal = ref([]);
+  const warehouses = ref([]);
 
   // Getter
   const onGetterPersonal = computed(() => personal);
+  const onGetterWarehouses = computed(() => warehouses);
 
   // Action
+  // - Store hồ sơ
   const onActionSaveInfoPersonal = async (args) => {
-    console.log(args);
     return await onResponse(API.onApiSaveInfoPersonal(args), true);
   };
+  // ------------------------------------------------------------------------
+
+  // - Store kho hàng
+  const onActionGetWarehouses = async (params) => {
+    const result = await onResponse(API.onApiGetWarehouses(params));
+    warehouses.value = result.data;
+    return result;
+  };
+  // -------------------------------------------------------------------------
 
   return {
     // Getter
+    // - Hồ sơ getter
     onGetterPersonal,
 
+    // - Kho hàng getter
+    onGetterWarehouses,
+
     // Action
+    // - Hồ sơ action
     onActionSaveInfoPersonal,
+
+    // - Kho hàng action
+    onActionGetWarehouses,
   };
 });

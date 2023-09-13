@@ -24,6 +24,7 @@ import Avatar from "@/components/common/Avatar.vue";
 import RatingCustom from "@/components/common/RatingCustom.vue";
 import BackgroundRemovePopup from "@/components/common/BackgroundRemovePopup.vue";
 import PopupNotification from "@/components/common/PopupNotification.vue";
+import StatusComponent from "@/components/common/StatusComponent.vue";
 
 import InputText from "primevue/inputtext";
 import Password from "primevue/password";
@@ -51,6 +52,10 @@ import Checkbox from "primevue/checkbox";
 import Listbox from "primevue/listbox";
 import ConfirmationService from "primevue/confirmationservice";
 import ConfirmDialog from "primevue/confirmdialog";
+import SelectButton from "primevue/selectbutton";
+import Sidebar from "primevue/sidebar";
+import PanelMenu from "primevue/panelmenu";
+import InputNumber from "primevue/inputnumber";
 
 const app = createApp(AppWrapper);
 
@@ -67,6 +72,7 @@ app.component("Avatar", Avatar);
 app.component("RatingCustom", RatingCustom);
 app.component("BackgroundRemovePopup", BackgroundRemovePopup);
 app.component("PopupNotification", PopupNotification);
+app.component("StatusComponent", StatusComponent);
 
 app.component("InputText", InputText);
 app.component("Password", Password);
@@ -91,5 +97,9 @@ app.component("Textarea", Textarea);
 app.component("Checkbox", Checkbox);
 app.component("Listbox", Listbox);
 app.component("ConfirmDialog", ConfirmDialog);
+app.component("SelectButton", SelectButton);
+app.component("Sidebar", Sidebar);
+app.component("PanelMenu", PanelMenu);
+app.component("InputNumber", InputNumber);
 
 app.mount("#app");

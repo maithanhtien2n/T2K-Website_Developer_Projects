@@ -1,39 +1,45 @@
 import axios from "axios";
 import { accessToken } from "@/utils";
 
+// Web client
 export * as API_HOME from "@/views/home/services/api";
 export * as API_CART from "@/views/cart/services/api";
 export * as API_PRODUCT from "@/views/products/services/api";
 export * as API_WAREHOUSE from "@/views/warehouse/services/api";
 export * as API_PERSONAL from "@/views/personal/services/api";
 
+// Web admin
+export * as API_ACCOUNT from "@/pages/views/account/services/api";
+
 class ApiApp {
   // headers: {
   //   "Content-Type": "multipart/form-data",
   // },
 
-  onApiLogin = async (args) => {
+  onApiLogin = async (args, type_account) => {
     return await AxiosInstance({
       method: "POST",
       url: "account/login",
       data: {
-        user_name: args?.userName,
-        password: args?.password,
+        user_name: args?.userName || null,
+        password: args?.password || null,
+        type_account: type_account || null,
       },
     });
   };
 
-  onApiRegisterAccount = async (args) => {
+  onApiRegisterAccount = async (args, type_account) => {
     return await AxiosInstance({
       method: "POST",
       url: "account/register",
       data: {
-        full_name: args?.fullName || "",
+        full_name: args?.fullName || null,
         phone_number: args?.phoneNumber || null,
-        day_of_birth: args?.dateOfBirth || "",
-        gender: args?.gender,
-        user_name: args?.userName,
-        password: args?.password,
+        day_of_birth: args?.dateOfBirth || null,
+        gender: args?.gender || null,
+        user_name: args?.userName || null,
+        password: args?.password || null,
+        type_account: type_account || null,
       },
     });
   };
@@ -51,7 +57,9 @@ export const API_APP = new ApiApp();
 const AxiosInstance = axios.create({
   baseURL: "http://localhost:3000/api/v1/",
 
-  // baseURL: "http://192.168.1.4:3000/api/v1/",
+  // baseURL: "http://192.168.88.147:3000/api/v1/",
+
+  // baseURL: "http://192.168.1.2:3000/api/v1/",
 
   // baseURL: "http://192.168.88.21:3000/api/v1/",
 });

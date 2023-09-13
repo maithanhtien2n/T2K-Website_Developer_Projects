@@ -1,12 +1,11 @@
 <script setup>
-import { accessToken, onDeleteAppLocalStorage } from "@/utils";
 import { reactive, watch } from "vue";
-import { StoreApp } from "@/services/stores";
 import { useRoute, useRouter } from "vue-router";
+import { onDeleteAppLocalStorage } from "@/utils";
 import PopupAuth from "@/components/PopupAuth.vue";
 import { updateAuthorizationHeader } from "@/services/api";
 import { formatToVND, onLoadingPageRepeat } from "@/utils/index";
-import { STORE_CART } from "../../services/stores";
+import { StoreApp, STORE_CART, STORE_HOME } from "@/services/stores";
 
 const emits = defineEmits(["onEmitOpenPopupAuth"]);
 
@@ -22,6 +21,8 @@ const {
 } = StoreApp();
 
 const { onActionLogoutCart } = STORE_CART.StoreCart();
+
+const { onActionLogoutNotification } = STORE_HOME.StoreHome();
 
 const data = reactive({
   display: {
@@ -73,6 +74,7 @@ const onClickItemOption = (value) => {
       onDeleteAppLocalStorage();
       updateAuthorizationHeader(null);
       onActionLogoutCart();
+      onActionLogoutNotification();
       onActionLogout();
       setTimeout(() => onActionLoadingActive(false), 1000);
       break;
@@ -94,7 +96,7 @@ watch(onGetterCategoryPopup, () => {
   <!-- Icon mở popup -->
   <div
     @click="data.display.transform = 'translateX(0)'"
-    class="active-category-icon"
+    class="active-category-icon on-click"
   >
     <div
       class="bg-main-color w-2rem h-2rem border-circle flex justify-content-center align-items-center"
@@ -121,16 +123,6 @@ watch(onGetterCategoryPopup, () => {
       Đăng xuất
     </label>
 
-    <!-- Label kho hàng -->
-    <label
-      v-if="userInfo?.account_id"
-      @click="onClickToWarehouse"
-      class="category-item flex align-items-center gap-2 on-click"
-    >
-      <i class="pi pi-credit-card" />
-      Kho hàng
-    </label>
-
     <!-- Label đăng xuất -->
     <label
       v-if="onHide()"
@@ -141,16 +133,10 @@ watch(onGetterCategoryPopup, () => {
       Tài khoản
     </label>
 
-    <!-- Label thông báo -->
-    <label class="category-item flex align-items-center gap-2 on-click">
-      <i class="pi pi-bell" />
-      Thông báo
-    </label>
-
     <!-- Thông tin người dùng -->
     <div
       v-if="userInfo?.account_id"
-      class="info-user flex align-items-center gap-2 unselectable relative on-click"
+      class="info-user flex align-items-center gap-2 unselectable relative cursor-pointer"
     >
       <img
         class="w-2rem h-2rem border-circle box-shadow-1 object-fit-cover"
@@ -176,7 +162,7 @@ watch(onGetterCategoryPopup, () => {
           v-for="(item, index) in data.settingOptions"
           :key="index"
           :class="{ 'p-error': item === 'Đăng xuất' }"
-          class="item-option cursor-pointer p-3 on-click"
+          class="item-option cursor-pointer p-3"
           @click="onClickItemOption(item)"
         >
           {{ item }}

@@ -11,6 +11,7 @@ module.exports = {
         "gender",
         "user_name",
         "password",
+        "type_account",
       ],
       data: ({
         full_name,
@@ -19,14 +20,15 @@ module.exports = {
         gender,
         user_name,
         password,
+        type_account,
       } = req.body),
     });
   },
 
   loginCT: async (req, res) => {
     await onResponse(req, res, model.loginMD, {
-      checkData: ["user_name", "password"],
-      data: ({ user_name, password } = req.body),
+      checkData: ["user_name", "password", "type_account"],
+      data: ({ user_name, password, type_account } = req.body),
       message: "Đăng nhập thành công!",
     });
   },
@@ -58,6 +60,37 @@ module.exports = {
         host: req.headers.host,
       },
       message: "Cập nhật dữ liệu thành công!",
+    });
+  },
+
+  // ------------------- API TRANG ADMIN -----------------------------------
+  accountCT: async (req, res) => {
+    const { status, key_search } = req.query;
+    await onResponse(req, res, model.accountMD, {
+      data: { status, key_search },
+    });
+  },
+
+  updateStatusAccountCT: async (req, res) => {
+    const { account_id, status } = req.query;
+    await onResponse(req, res, model.updateStatusAccountMD, {
+      data: { account_id, status },
+      message: "Cập nhật dữ liệu thành công!",
+    });
+  },
+
+  rechargeCT: async (req, res) => {
+    const { account_id, deposit_amount } = req.body;
+    await onResponse(req, res, model.rechargeMD, {
+      data: { account_id, deposit_amount },
+      message: "Nạp tiền thành công!",
+    });
+  },
+
+  getNotificationCT: async (req, res) => {
+    const { account_id, new_notification } = req.query;
+    await onResponse(req, res, model.getNotificationMD, {
+      data: { account_id, new_notification },
     });
   },
 };

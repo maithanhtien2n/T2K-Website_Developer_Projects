@@ -1,13 +1,17 @@
 import { API_APP } from "./api";
 import { defineStore } from "pinia";
-import { computed, reactive, ref } from "vue";
+import { computed, ref } from "vue";
 import { Utils } from "@/utils/response";
 
+// Web Client
 export * as STORE_HOME from "@/views/home/services/store";
 export * as STORE_CART from "@/views/cart/services/store";
 export * as STORE_WAREHOUSE from "@/views/warehouse/services/store";
 export * as STORE_PRODUCT from "@/views/products/services/store";
 export * as STORE_PERSONAL from "@/views/personal/services/store";
+
+// Web admin
+export * as STORE_ACCOUNT from "@/pages/views/account/services/store";
 
 export const StoreApp = defineStore("StoreApp", () => {
   const { onResponse } = Utils();
@@ -67,9 +71,9 @@ export const StoreApp = defineStore("StoreApp", () => {
   };
 
   // Đăng nhập
-  const onActionLogin = async (args) => {
+  const onActionLogin = async (args, type_account) => {
     categoryPopup.value = !categoryPopup.value;
-    return await onResponse(API_APP.onApiLogin(args));
+    return await onResponse(API_APP.onApiLogin(args, type_account));
   };
 
   const onActionLogout = () => {
@@ -81,9 +85,9 @@ export const StoreApp = defineStore("StoreApp", () => {
     categoryPopup.value = !categoryPopup.value;
   };
 
-  const onActionRegisterAccount = async (args) => {
+  const onActionRegisterAccount = async (args, type_account) => {
     categoryPopup.value = !categoryPopup.value;
-    return await onResponse(API_APP.onApiRegisterAccount(args));
+    return await onResponse(API_APP.onApiRegisterAccount(args, type_account));
   };
 
   // Lấy thông tin người dùng

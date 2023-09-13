@@ -1,7 +1,7 @@
 <script setup></script>
 
 <template>
-  <div class="ww-full bg-main-bottom">
+  <div class="w-full bg-main-bottom">
     <div
       class="container flex p-3 align-items-center justify-content-between flex-wrap-reverse gap-3"
     >

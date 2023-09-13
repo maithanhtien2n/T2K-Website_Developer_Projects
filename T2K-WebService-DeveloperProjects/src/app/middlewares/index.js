@@ -13,6 +13,7 @@ const authenticateToken = (req, res, next) => {
       if (error) {
         throwError(251, "Mã token không chính xác!");
       }
+
       req.data = data;
       next();
     });

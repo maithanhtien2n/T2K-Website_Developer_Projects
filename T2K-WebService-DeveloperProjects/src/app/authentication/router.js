@@ -35,5 +35,35 @@ module.exports = (router) => {
   );
 
   // API cập nhật thông tin người dùng
-  router.put(`${commonRoute}/user-info`, controller.updateUserInfoCT);
+  router.put(
+    `${commonRoute}/user-info`,
+    authenticateToken,
+    controller.updateUserInfoCT
+  );
+
+  // ------------------ API TRANG ADMIN ------------------------------
+
+  router.post(
+    `${commonRoute}/accounts`,
+    authenticateToken,
+    controller.accountCT
+  );
+
+  router.put(
+    `${commonRoute}/accounts`,
+    authenticateToken,
+    controller.updateStatusAccountCT
+  );
+
+  router.post(
+    `${commonRoute}/accounts/recharge`,
+    authenticateToken,
+    controller.rechargeCT
+  );
+
+  router.get(
+    `${commonRoute}/accounts/notification`,
+    authenticateToken,
+    controller.getNotificationCT
+  );
 };

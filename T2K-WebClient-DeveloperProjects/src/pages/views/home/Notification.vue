@@ -1,6 +1,5 @@
 <script setup></script>
-<template>
-  <div>login</div>
-</template>
 
-<style scoped></style>
+<template>
+  <div>Trang thông báo</div>
+</template>

@@ -89,36 +89,6 @@ const onClickRemoveCart = (key, ids) => {
   });
 };
 
-const products = reactive([
-  {
-    image:
-      "https://anime.atsit.in/l/wp-content/uploads/2022/09/khi-nao-goku-len-super-saiyan-blue.jpg",
-    title: "Project php bán hàng bằng PHP",
-    price: 500000,
-    sold: 200,
-  },
-  {
-    image:
-      "https://i.ex-cdn.com/mgn.vn/files/content/2021/11/03/toc-goku_1-2117.jpg",
-    title: "Project php bán hàng bằng PHP",
-    price: 500000,
-    sold: 200,
-  },
-  {
-    image:
-      "https://genk.mediacdn.vn/2019/4/2/photo-1-15541780148131777189878.jpg",
-    title: "Project php bán hàng bằng PHP",
-    price: 500000,
-    sold: 200,
-  },
-  {
-    image: "https://genk.mediacdn.vn/2017/photo-12-1510731176941.jpg",
-    title: "Project php bán hàng bằng PHP",
-    price: 500000,
-    sold: 200,
-  },
-]);
-
 onLoadingPage(onActionLoadingActive);
 </script>
 
@@ -294,14 +264,12 @@ onLoadingPage(onActionLoadingActive);
                 }}</span>
               </div>
 
-              <div
-                @click="onClickRemoveCart('item', [item?.cart_id])"
-                class="item col-2 text-right"
-              >
+              <div class="item col-2 text-right">
                 <Button
                   v-if="data.sizeScreen > 750"
                   icon="pi pi-trash"
                   class="p-button-rounded p-button-outlined p-button-danger p-button-text"
+                  @click="onClickRemoveCart('item', [item?.cart_id])"
                 />
 
                 <Button v-else label="Xóa" class="p-button-danger w-full" />
@@ -346,11 +314,6 @@ onLoadingPage(onActionLoadingActive);
       </div>
       <!-- End danh sách giỏ hàng -->
     </div>
-
-    <!-- Sản phẩm liên quan -->
-    <CardBody label="Sản phẩm liên quan">
-      <CardProducts :value="products" />
-    </CardBody>
   </div>
 
   <ConfirmDialog class="line-height-3" />

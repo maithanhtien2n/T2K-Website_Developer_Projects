@@ -12,35 +12,20 @@ export const StoreHome = defineStore("StoreHome", () => {
 
   // State
   const products = ref([]);
-  const newNotifications = ref([]);
 
   // Getter
   const onGetterProducts = computed(() => products);
-  const onGetterNewNotifications = computed(() => newNotifications);
 
   // Action
-  const onActionLogoutNotification = () => {
-    newNotifications.value = [];
-  };
-
   const onActionGetProducts = async (args) => {
     const result = await onResponse(API.onApiGetProducts(args));
     return (products.value = result.data);
   };
 
-  const onActionGetNewNotifications = async (args) => {
-    const result = await onResponse(API.onApiGetNewNotifications(args));
-    return (newNotifications.value = result.data);
-  };
-
   return {
     // Getter
     onGetterProducts,
-    onGetterNewNotifications,
-
     // Action
-    onActionLogoutNotification,
     onActionGetProducts,
-    onActionGetNewNotifications,
   };
 });

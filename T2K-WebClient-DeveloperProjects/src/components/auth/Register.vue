@@ -57,7 +57,7 @@ const onCheckValidate = () => {
 const onClickButtonRegister = (value) => {
   onActionLoadingActive(true);
 
-  onActionRegisterAccount(value)
+  onActionRegisterAccount(value, "USER_ACCOUNT")
     .then((res) => {
       if (res.success) {
         onActionPopupNotification({

@@ -1,10 +1,10 @@
 <script setup>
 import { reactive } from "vue";
-import { onLoadingPageRepeat, formatToVND } from "@/utils";
 import { useRoute, useRouter } from "vue-router";
 import Category from "@/components/header/Category.vue";
-import { StoreApp, STORE_CART } from "@/services/stores";
 import SearchBox from "@/components/header/SearchBox.vue";
+import { onLoadingPageRepeat, formatToVND } from "@/utils";
+import { StoreApp, STORE_CART, STORE_HOME } from "@/services/stores";
 
 const ROUTER = useRouter();
 
@@ -14,9 +14,13 @@ const { onActionLoadingActive } = StoreApp();
 
 const { onGetterCarts } = STORE_CART.StoreCart();
 
+const { onGetterNewNotifications } = STORE_HOME.StoreHome();
+
 const data = reactive({
   displaySearch: "translateX(-100%)",
   resetKeySearch: false,
+  displayNotification: false,
+  sizeScreen: window.innerWidth,
 });
 
 const onClickLogo = () => {
@@ -34,6 +38,18 @@ const onClickToCart = () => {
     onActionLoadingActive,
     ROUTER.push({ name: "Cart" })
   );
+};
+
+const onClickIconNotification = () => {
+  if (data.sizeScreen < 550) {
+    ROUTER.push({ name: "Notification" });
+  } else {
+    data.displayNotification = true;
+  }
+};
+
+const onClickRemovePopup = () => {
+  data.displayNotification = false;
 };
 </script>
 
@@ -121,6 +137,51 @@ const onClickToCart = () => {
           </div> -->
         </div>
 
+        <BackgroundRemovePopup
+          :display="data.displayNotification"
+          @onRemovePopup="onClickRemovePopup"
+          class="opacity-0"
+        />
+        <!-- Label thông báo -->
+        <label
+          @click="onClickIconNotification"
+          class="category-item relative flex align-items-center gap-2"
+        >
+          <i style="font-size: 1.3rem" class="pi pi-bell text-900 on-click-3" />
+
+          <span
+            v-if="onGetterNewNotifications.length"
+            style="background-color: rgb(230, 49, 49)"
+            class="count-cart text-white absolute font-bold flex align-items-center justify-content-center border-circle"
+          >
+            {{ onGetterNewNotifications.length }}
+          </span>
+
+          <!-- Popup thông báo -->
+          <div
+            v-if="data.displayNotification"
+            class="card p-0 absolute w-23rem right-0 top-100 flex flex-column gap-3 pb-3"
+          >
+            <span class="pt-3 pl-3">Thông báo</span>
+
+            <div class="item-notification flex flex-column gap-3 on-click">
+              <div class="flex gap-2 px-3 py-2">
+                <img
+                  class="w-2rem h-2rem object-fit-cover pt-1"
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Microsoft_Edge_Dev_Logo_%282018%29.svg/768px-Microsoft_Edge_Dev_Logo_%282018%29.svg.png"
+                  alt="Lỗi ảnh"
+                />
+                <div class="flex flex-column gap-1">
+                  <span class="line-height-2 text-700">
+                    Chúng tôi vừa nạp thành công 200.000đ vào tài khoản của bạn!
+                  </span>
+                  <span class="text-custom-mini text-700">7:00 12/09/2023</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </label>
+
         <Category />
       </div>
     </div>
@@ -154,6 +215,14 @@ const onClickToCart = () => {
 
 .icon-cart:hover .cart-preview {
   display: block !important;
+}
+
+.item-notification {
+  transition: all 0.2s ease;
+}
+
+.item-notification:hover {
+  background-color: #ececec;
 }
 
 /* Tùy chỉnh kích thước giao diện */

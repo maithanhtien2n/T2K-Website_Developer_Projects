@@ -1,13 +1,15 @@
 <script setup>
-import { onMounted, reactive } from "vue";
-import { formatDate } from "@/utils";
 import { userData } from "@/utils";
-import { STORE_PRODUCT, STORE_WAREHOUSE } from "@/services/stores";
+import { formatDate } from "@/utils";
 import { useRoute } from "vue-router";
+import { onMounted, reactive, watch } from "vue";
+import { StoreApp, STORE_PRODUCT, STORE_WAREHOUSE } from "@/services/stores";
 
 const emits = defineEmits(["onEmitUpdateProductDetail"]);
 
 const ROUTE = useRoute();
+
+const { onGetterUserInfo: userInfo } = StoreApp();
 
 const { onActionSendEvaluate } = STORE_PRODUCT.StoreProduct();
 
@@ -16,21 +18,35 @@ const { onActionGetWarehouses, onGetterWarehouses: warehouses } =
 
 const props = defineProps(["value"]);
 
+const user_info = userData.value?.user_info;
+
 const data = reactive({
   id: ROUTE.params.id,
   amountStart: 0,
   content: null,
+
+  isCheckEvaluate: false,
 });
 
 const onCheckBought = () => {
   return warehouses.value.some(({ product_id }) => +product_id === +data.id);
 };
 
+const onCheckEvaluate = () => data.isCheckEvaluate;
+
+const onShowStart = () => onCheckBought() && onCheckEvaluate();
+
 const onClickSendEvaluate = async () => {
+  console.log(data.content);
+
   const res = await onActionSendEvaluate({
-    user_id: userData.value?.user_info?.user_id,
+    user_id: user_info?.user_id,
     product_id: ROUTE.params.id,
-    start_amount: data.amountStart,
+    start_amount: onCheckBought()
+      ? onCheckEvaluate()
+        ? data.amountStart
+        : -1
+      : 0,
     content: data.content,
   });
 
@@ -41,8 +57,24 @@ const onClickSendEvaluate = async () => {
   }
 };
 
+watch(
+  () => props.value,
+  (value) => {
+    const userEvaluate = value.evaluate.filter(
+      ({ user_id }) => user_id === user_info?.user_id
+    );
+
+    data.isCheckEvaluate =
+      userEvaluate.length > 0
+        ? !userEvaluate.some(({ start_key }) =>
+            [1, 2, 3, 4, 5].includes(start_key)
+          )
+        : true;
+  }
+);
+
 onMounted(() => {
-  onActionGetWarehouses({ user_id: userData.value?.user_info?.user_id });
+  onActionGetWarehouses({ user_id: user_info?.user_id });
 });
 </script>
 
@@ -60,23 +92,26 @@ onMounted(() => {
         }}
       </span>
       <span>|</span>
-      <span>{{ `Đã có ${props?.value?.amount_evaluate} đánh giá` }}</span>
+      <span v-if="props?.value?.amount_evaluate">
+        {{ `Đã có ${props?.value?.amount_evaluate} đánh giá` }}
+      </span>
+      <span v-else>Chưa có đánh giá nào</span>
     </div>
 
     <div class="flex flex-column gap-3">
       <div
-        v-if="userData?.user_info?.full_name"
+        v-if="userInfo?.user_info?.full_name"
         class="flex flex-column gap-2 bg-main-right p-3 border-round-lg"
       >
         <Avatar
           :value="{
-            image: userData?.user_info?.image,
-            name: userData?.user_info?.full_name,
+            image: userInfo?.user_info?.image,
+            name: userInfo?.user_info?.full_name,
           }"
         >
           <div class="text-custom-mini">{{ formatDate(new Date()) }}</div>
 
-          <div v-if="onCheckBought()">
+          <div v-if="onShowStart()">
             <Rating v-model="data.amountStart" :cancel="false">
               <template #onicon>
                 <i
@@ -101,7 +136,7 @@ onMounted(() => {
           maxlength="1000"
           class="textarea"
           placeholder="Nhập đánh giá"
-          :disabled="onCheckBought() && !data.amountStart"
+          :disabled="onShowStart() && !data.amountStart"
         />
 
         <Button
@@ -128,7 +163,7 @@ onMounted(() => {
             }"
           >
             <div
-              v-if="item.start_amount === 'Chưa trải nghiệm sản phẩm'"
+              v-if="item.start_key === 0 || item.start_key === -1"
               class="text-custom-mini"
             >
               {{ item.start_amount }}

@@ -18,7 +18,7 @@ module.exports = {
     req,
     res,
     onModel,
-    { checkData = [], data = undefined, message = undefined }
+    { checkData = [], data = {}, message = "" }
   ) => {
     try {
       if (checkData[0]) checkNull(req.body, checkData);
@@ -58,5 +58,12 @@ module.exports = {
     }
 
     return code;
+  },
+
+  formatToVND: (amount) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(amount);
   },
 };
